@@ -1,0 +1,146 @@
+"use server";
+
+import { session } from "@/constants/data";
+import { prisma } from "@/lib/prisma";
+import { ActionResponse } from "@/types/repair-brand";
+import { revalidatePath } from "next/cache";
+
+export async function createUser(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const userData = {
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      storeId: session.user.storeId,
+      calculateCommition: formData.get("calculateCommition") as string,
+      refundCommition: formData.get("refundCommition") as string,
+      accessoriesPercentage: Number(formData.get("accessoriesPercentage")),
+      electronicsPercentage: Number(formData.get("electronicsPercentage")),
+      serviceProductsPercentage: Number(
+        formData.get("serviceProductsPercentage")
+      ),
+      repairsPercentage: Number(formData.get("repairsPercentage")),
+    };
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: userData.email,
+      },
+    });
+
+    if (existingUser) {
+      return {
+        success: false,
+        message: "User already exists",
+      };
+    }
+
+    await prisma.user.create({
+      data: {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        storeId: userData.storeId,
+        status: "ACTIVE",
+        role: "MANAGER",
+        calculateCommition:
+          userData.calculateCommition === "sales" ? "sales" : "profit",
+        refundCommition: userData.refundCommition === "yes" ? true : false,
+        accessoriesPercentage: userData.accessoriesPercentage,
+        electronicsPercentage: userData.electronicsPercentage,
+        serviceProductsPercentage: userData.serviceProductsPercentage,
+        repairsPercentage: userData.repairsPercentage,
+      },
+    });
+    revalidatePath(`/${session.user.storeId}/settings/users`);
+    return {
+      success: true,
+      message: "user added successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Failed to add user. Please try again.",
+    };
+  }
+}
+export async function updateUser(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const userData = {
+      id: formData.get("id") as string,
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      phone: formData.get("phone") as string,
+      storeId: session.user.storeId,
+      calculateCommition: formData.get("calculateCommition") as string,
+      refundCommition: formData.get("refundCommition") as string,
+      accessoriesPercentage: Number(formData.get("accessoriesPercentage")),
+      electronicsPercentage: Number(formData.get("electronicsPercentage")),
+      serviceProductsPercentage: Number(
+        formData.get("serviceProductsPercentage")
+      ),
+      repairsPercentage: Number(formData.get("repairsPercentage")),
+    };
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: userData.id,
+      },
+    });
+
+    if (!existingUser) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    await prisma.user.update({
+      where: {
+        id: userData.id,
+      },
+      data: {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        storeId: userData.storeId,
+        status: "ACTIVE",
+        role: "MANAGER",
+        calculateCommition:
+          userData.calculateCommition === "sales" ? "sales" : "profit",
+        refundCommition: userData.refundCommition === "yes" ? true : false,
+        accessoriesPercentage: userData.accessoriesPercentage,
+        electronicsPercentage: userData.electronicsPercentage,
+        serviceProductsPercentage: userData.serviceProductsPercentage,
+        repairsPercentage: userData.repairsPercentage,
+      },
+    });
+    revalidatePath(`/${session.user.storeId}/settings/users`);
+    return {
+      success: true,
+      message: "user updated successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Failed to update user. Please try again.",
+    };
+  }
+}
+
+export async function getUsers() {
+  try {
+    const users = await prisma.user.findMany({
+      where: { storeId: session.user.storeId },
+    });
+    return users;
+  } catch (error) {
+    return null;
+  }
+}

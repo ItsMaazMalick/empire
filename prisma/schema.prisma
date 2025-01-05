@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Store {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  code String @unique
+  name String
+
+  users User[]
+
+  repairBrands RepairBrand[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id                        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  email                     String   @unique
+  phone                     String?
+  password                  String?
+  calculateCommition        String?
+  refundCommition           Boolean?
+  accessoriesPercentage     Float?
+  electronicsPercentage     Float?
+  serviceProductsPercentage Float?
+  repairsPercentage         Float?
+
+  role    Role
+  status  Status @default(INACTIVE)
+  storeId String @db.ObjectId
+  store   Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Order     Order[]
+}
+
+model RepairBrand {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  store        Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId      String         @db.ObjectId
+  repairSeries RepairSeries[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model RepairSeries {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  brand     RepairBrand   @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  brandId   String        @db.ObjectId
+  models    RepairModel[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model RepairModel {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  series            RepairSeries        @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  seriesId          String              @db.ObjectId
+  repairServiceType RepairServiceType[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model RepairServiceType {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  repairServices RepairService[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  repairModel    RepairModel     @relation(fields: [repairModelId], references: [id], onDelete: Cascade)
+  repairModelId  String          @db.ObjectId
+}
+
+model RepairService {
+  id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+  name                String
+  stock               Int               @default(0)
+  cost                Float             @default(0)
+  price               Float             @default(0)
+  repairServiceType   RepairServiceType @relation(fields: [repairServiceTypeId], references: [id], onDelete: Cascade)
+  repairServiceTypeId String            @db.ObjectId
+
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  OrderItem OrderItem[]
+}
+
+model Customer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String
+  email     String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  price       Float
+  orderNotes  String?
+  tags        String[]
+  repairNotes String?
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String      @db.ObjectId
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  customerId  String      @db.ObjectId
+}
+
+model OrderItem {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  quantity     Int          @default(1)
+  imei         String
+  password     String?
+  dueDate      DateTime?
+  repairStatus RepairStatus @default(PENDING)
+
+  orderServiceId String        @db.ObjectId
+  orderService   RepairService @relation(fields: [orderServiceId], references: [id])
+  order          Order         @relation(fields: [orderId], references: [id])
+  orderId        String        @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  OWNER
+  MANAGER
+  TECHNICIAN
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum RepairStatus {
+  WAITING_FOR_PARTS
+  WORKING_ON_IT
+  PENDING
+  FIXED
+  PICKED_UP
+}
