@@ -35,10 +35,13 @@ export default async function DashboardPage({
         <Group className="size-16" />
         <p className="text-xl font-bold">Team Task</p>
       </div>
-      <div className="p-6 rounded-xl bg-card text-white flex flex-col gap-4">
+      <Link
+        href={`/123/edit-repair`}
+        className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
+      >
         <Wrench className="size-16" />
         <p className="text-xl font-bold">Manage Devices</p>
-      </div>
+      </Link>
       <div className="p-6 rounded-xl bg-card text-white flex flex-col gap-4">
         <ScanBarcode className="size-16" />
         <p className="text-xl font-bold">Electronic Devices</p>
@@ -70,8 +73,10 @@ export default async function DashboardPage({
         </div>
       </div>
       <div className="space-y-4">
-        <Button className="w-full">
-          <ShoppingCart /> Go to Cart
+        <Button className="w-full" asChild>
+          <Link href="/123/cart">
+            <ShoppingCart /> Go to Cart
+          </Link>
         </Button>
         <Button variant={"ghost"} className="w-full">
           <Printer /> Print last order receipt

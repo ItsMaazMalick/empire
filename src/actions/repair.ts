@@ -169,6 +169,7 @@ export async function createRepairModel(
       },
     ];
 
+    // Create the repair model first
     const model = await prisma.repairModel.create({
       data: {
         name: modelName,
@@ -176,30 +177,48 @@ export async function createRepairModel(
       },
     });
 
-    // Perform all the operations in a transaction
-    const transactionOps = serviceCategories.map(async (category) => {
-      return prisma.$transaction(async () => {
-        const serviceType = await prisma.repairServiceType.create({
-          data: {
-            name: category.name,
-            repairModelId: model.id,
-          },
-        });
+    // Prepare data for bulk insert of service types
+    const serviceTypesData = serviceCategories.map((category) => ({
+      name: category.name,
+      repairModelId: model.id,
+    }));
 
-        return Promise.all(
-          category.services.map((serviceName) =>
-            prisma.repairService.create({
-              data: {
-                name: serviceName,
-                repairServiceTypeId: serviceType.id,
-              },
-            })
-          )
-        );
+    // Create service types in bulk
+    await prisma.repairServiceType.createMany({
+      data: serviceTypesData,
+    });
+
+    // Retrieve service type ids from the database
+    const serviceTypes = await prisma.repairServiceType.findMany({
+      where: { repairModelId: model.id },
+      select: { id: true, name: true },
+    });
+
+    // Create a mapping of service types by name to id
+    const serviceTypeIdsMap = new Map<string, string>();
+    serviceTypes.forEach((type: any) => {
+      serviceTypeIdsMap.set(type.name, type.id.toString()); // Ensure id is a string
+    });
+
+    // Map services to their respective service types using the ids
+    const servicesData = serviceCategories.flatMap((category) => {
+      return category.services.map((serviceName) => {
+        const serviceTypeId = serviceTypeIdsMap.get(category.name);
+        if (!serviceTypeId) {
+          throw new Error(`Service type for ${category.name} not found`);
+        }
+
+        return {
+          name: serviceName,
+          repairServiceTypeId: serviceTypeId, // Ensure it's a string
+        };
       });
     });
 
-    await Promise.all(transactionOps);
+    // Create services in bulk
+    await prisma.repairService.createMany({
+      data: servicesData,
+    });
 
     // If the transaction completes successfully
     revalidatePath(`/${session.user.storeId}/edit-repair`);
@@ -208,6 +227,7 @@ export async function createRepairModel(
       message: "Model added successfully",
     };
   } catch (error) {
+    console.error(error); // log error for debugging
     return {
       success: false,
       message: "Failed to add model. Please try again.",

@@ -19,17 +19,17 @@ const links = [
     icon: Home,
     href: "/123/dashboard",
   },
-  {
-    id: 2,
-    name: "Repairs",
-    icon: Bug,
-    href: "/",
-  },
+  // {
+  //   id: 2,
+  //   name: "Repairs",
+  //   icon: Bug,
+  //   href: "/",
+  // },
   {
     id: 3,
     name: "Orders",
     icon: ShoppingBag,
-    href: "/",
+    href: "/123/orders",
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const links = [
     id: 5,
     name: "Products",
     icon: SquareChartGantt,
-    href: "/",
+    href: "/123/products",
   },
   {
     id: 6,

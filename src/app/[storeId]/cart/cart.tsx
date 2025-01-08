@@ -9,6 +9,9 @@ import { useCartStore } from "@/store";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AddCustomerModal } from "./add-customer-modal";
+import { createOrder } from "@/actions/order";
+import { RepairStatus } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 type Customer = {
   name: string;
@@ -30,8 +33,14 @@ type User = {
 };
 
 export default function Cart() {
-  const { order, removeService, updateService, removeOrder, clearOrder } =
-    useCartStore(); // Assuming `updateService` is available in your store
+  const {
+    order,
+    removeService,
+    updateService,
+    removeOrder,
+    clearOrder,
+    updateOrderDetails,
+  } = useCartStore(); // Assuming `updateService` is available in your store
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -58,7 +67,7 @@ export default function Cart() {
     e: React.ChangeEvent<HTMLSelectElement>,
     serviceId: string
   ) => {
-    updateService(serviceId, { status: e.target.value });
+    updateService(serviceId, { status: e.target.value as RepairStatus });
   };
 
   const handleDateChange = (
@@ -66,6 +75,46 @@ export default function Cart() {
     serviceId: string
   ) => {
     updateService(serviceId, { dueDate: e.target.value });
+  };
+
+  const handleCustomerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCustomerId = e.target.value;
+    const selectedCustomer = customers.find(
+      (customer) => customer.id === selectedCustomerId
+    );
+
+    if (selectedCustomer) {
+      updateOrderDetails({
+        customer: {
+          id: selectedCustomer.id,
+          name: selectedCustomer.name,
+          phone: selectedCustomer.phone,
+          email: selectedCustomer.email || "",
+        },
+      });
+    }
+  };
+
+  const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUserId = e.target.value;
+    const selectedUser = users.find((user) => user.id === selectedUserId);
+
+    if (selectedUser) {
+      updateOrderDetails({
+        userId: selectedUser.id,
+      });
+    }
+  };
+
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+    console.log(order);
+    const res = await createOrder(order);
+    if (res?.success) {
+      clearOrder();
+      router.push("/123/dashboard");
+    }
   };
 
   return (
@@ -144,9 +193,11 @@ export default function Cart() {
           <div className="w-full flex flex-col gap-2">
             <label htmlFor="">Add Customer</label>
             <select
-              name=""
-              id=""
+              name="customer"
+              id="customer"
               className="p-2 bg-background ring-1 ring-white rounded-md"
+              value={order?.customer?.id || ""}
+              onChange={handleCustomerChange}
             >
               <option value="">Select Customer</option>
               {customers.map((customer) => (
@@ -160,15 +211,29 @@ export default function Cart() {
         </div>
         <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
           <Label>Order Notes</Label>
-          <Input placeholder="Order Notes" />
+          <Input
+            onChange={(e) => updateOrderDetails({ orderNotes: e.target.value })}
+            value={order?.orderNotes || ""}
+            placeholder="Order Notes"
+          />
         </div>
         <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
           <Label>Add tags</Label>
-          <Input placeholder="Add Tags" />
+          <Input
+            onChange={(e) => updateOrderDetails({ tags: [e.target.value] })}
+            value={order?.tags || ""}
+            placeholder="Add Tags"
+          />
         </div>
         <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
           <Label>Repair Notes</Label>
-          <Input placeholder="Repair Notes" />
+          <Input
+            onChange={(e) =>
+              updateOrderDetails({ repairNotes: e.target.value })
+            }
+            value={order?.repairNotes || ""}
+            placeholder="Repair Notes"
+          />
         </div>
         <div className="p-4 rounded-lg bg-card text-card-foreground">
           <div className="w-full flex flex-col gap-2">
@@ -176,6 +241,8 @@ export default function Cart() {
             <select
               name=""
               id=""
+              value={order?.userId || ""}
+              onChange={handleUserChange}
               className="p-2 bg-background ring-1 ring-white rounded-md"
             >
               <option value="">Select Tech</option>
@@ -198,7 +265,9 @@ export default function Cart() {
           <Button className="w-full" variant={"link"}>
             Add Repair Device
           </Button>
-          <Button className="w-full">Checkout</Button>
+          <Button onClick={handleSubmit} className="w-full">
+            Checkout
+          </Button>
         </div>
       </div>
     </div>

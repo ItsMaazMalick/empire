@@ -1,12 +1,6 @@
+import { RepairStatus } from "@prisma/client";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-
-type RepairStatus =
-  | "WAITING_FOR_PARTS"
-  | "WORKING_ON_IT"
-  | "PENDING"
-  | "FIXED"
-  | "PICKED_UP";
 
 type OrderService = {
   serviceId: string;
@@ -16,17 +10,18 @@ type OrderService = {
   repairServiceType: string;
   imei?: string;
   password?: string;
-  status?: string;
+  status?: RepairStatus;
   dueDate?: string;
 };
 
 type Customer = {
+  id: string;
   name: string;
   phone: string;
-  email?: string;
+  email: string;
 };
 
-type Order = {
+export type Order = {
   id: number;
   price: number;
   tags: string[];
@@ -58,6 +53,7 @@ const initialOrder: Order = {
   userId: "",
   orderServices: [],
   customer: {
+    id: "",
     name: "",
     phone: "",
     email: "",
