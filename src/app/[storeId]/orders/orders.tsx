@@ -35,9 +35,11 @@ export function Orders({ orders }: any) {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button> */}
-          <Button className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Order
+          <Button className="bg-blue-600 hover:bg-blue-700" asChild>
+            <Link href={`/123/cart`}>
+              <Plus className="w-4 h-4 mr-2" />
+              Create Order
+            </Link>
           </Button>
         </div>
       </div>

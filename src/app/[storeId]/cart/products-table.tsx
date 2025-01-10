@@ -21,7 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Edit } from "lucide-react";
-import { AddProductModal } from "./add-product-modal";
+import { useCartStore } from "@/store";
 
 // Sample data - replace with your actual data source
 
@@ -41,6 +41,7 @@ export function ProductsTable({
   categories,
 }: OrdersTableProps) {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const { addServices } = useCartStore();
 
   // Filter orders based on active tab and search query
   const filteredOrders = products.filter((order: any) => {
@@ -70,6 +71,20 @@ export function ProductsTable({
     );
   };
 
+  const handleAddToCart = (product: any) => {
+    const orderServices = [
+      {
+        name: product.title,
+        quantity: 1,
+        repairStatus: "PENDING" as const,
+        serviceId: product.id,
+        price: product.price,
+        type: "PRODUCT",
+      },
+    ];
+    addServices(orderServices);
+  };
+
   return (
     <div className="rounded-md border border-gray-700">
       <Table>
@@ -89,7 +104,6 @@ export function ProductsTable({
             <TableHead>Cost</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Vendor</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -105,8 +119,11 @@ export function ProductsTable({
                 />
               </TableCell>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>
-                <Link href={`/123/orders/${order.id}`}>{order.title}</Link>
+              <TableCell
+                onClick={() => handleAddToCart(order)}
+                className="cursor-pointer"
+              >
+                {order.title}
               </TableCell>
               <TableCell>
                 <Badge
@@ -125,15 +142,6 @@ export function ProductsTable({
               <TableCell>{order.cost}</TableCell>
               <TableCell>{order.category.name}</TableCell>
               <TableCell>{order.vendor.name}</TableCell>
-              <TableCell>
-                <AddProductModal
-                  vendors={vendors}
-                  categories={categories}
-                  product={order}
-                >
-                  <Edit className="size-4 cursor-pointer" />
-                </AddProductModal>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -43,12 +43,12 @@ const links = [
     icon: SquareChartGantt,
     href: "/123/products",
   },
-  {
-    id: 6,
-    name: "Inventory",
-    icon: ListOrdered,
-    href: "/",
-  },
+  // {
+  //   id: 6,
+  //   name: "Inventory",
+  //   icon: ListOrdered,
+  //   href: "/",
+  // },
   {
     id: 7,
     name: "Finance",
@@ -61,12 +61,12 @@ const links = [
     icon: ChartArea,
     href: "/",
   },
-  {
-    id: 9,
-    name: "Payouts",
-    icon: KeyboardOff,
-    href: "/",
-  },
+  // {
+  //   id: 9,
+  //   name: "Payouts",
+  //   icon: KeyboardOff,
+  //   href: "/",
+  // },
   {
     id: 10,
     name: "Settings",

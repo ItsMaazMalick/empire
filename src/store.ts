@@ -7,11 +7,12 @@ type OrderService = {
   name: string;
   quantity: number;
   price: number;
-  repairServiceType: string;
+  repairServiceType?: string;
   imei?: string;
   password?: string;
   status?: RepairStatus;
   dueDate?: string;
+  type: string;
 };
 
 type Customer = {

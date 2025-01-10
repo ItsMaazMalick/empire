@@ -33,17 +33,45 @@ export async function createOrder(order: Order | null) {
       },
     });
 
-    const orderServices = await prisma.orderItem.createMany({
-      data: order?.orderServices.map((service) => ({
-        imei: service.imei || "",
-        orderId: newOrder.id,
-        orderServiceId: service.serviceId,
-        dueDate: new Date(service.dueDate || "").toISOString(),
-        password: service.password || "",
-        quantity: service.quantity,
-        repairStatus: service.status,
-      })),
-    });
+    const filteredOrderServices = order.orderServices.filter(
+      (service) => service.type === "REPAIR"
+    );
+    const filteredOrderProducts = order.orderServices.filter(
+      (product) => product.type === "PRODUCT"
+    );
+
+    if (filteredOrderServices.length > 0) {
+      try {
+        const orderServices = await prisma.orderItem.createMany({
+          data: filteredOrderServices.map((service) => ({
+            imei: service.imei || "",
+            orderId: newOrder.id,
+            orderServiceId: service.serviceId,
+            dueDate: new Date(service.dueDate || "").toISOString(),
+            password: service.password || "",
+            quantity: service.quantity,
+            repairStatus: service.status,
+          })),
+        });
+      } catch (error) {
+        await prisma.order.delete({ where: { id: newOrder.id } });
+      }
+    }
+
+    if (filteredOrderProducts.length > 0) {
+      try {
+        const orderProducts = await prisma.orderProduct.createMany({
+          data: filteredOrderProducts.map((product) => ({
+            quantity: product.quantity,
+            orderId: newOrder.id,
+            orderProductId: product.serviceId,
+          })),
+        });
+      } catch (error) {
+        await prisma.order.delete({ where: { id: newOrder.id } });
+      }
+    }
+
     return {
       success: true,
       message: "Order created successfully",

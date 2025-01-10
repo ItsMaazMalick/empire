@@ -12,6 +12,9 @@ import { AddCustomerModal } from "./add-customer-modal";
 import { createOrder } from "@/actions/order";
 import { RepairStatus } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { AddProductModal } from "../products/add-product-modal";
+import { AddProductToCartModal } from "./add-product-to-cart-modal";
+import Link from "next/link";
 
 type Customer = {
   name: string;
@@ -32,7 +35,7 @@ type User = {
   storeId: string;
 };
 
-export default function Cart() {
+export default function Cart({ products }: any) {
   const {
     order,
     removeService,
@@ -107,87 +110,155 @@ export default function Cart() {
   };
 
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     console.log(order);
+    setLoading(true);
     const res = await createOrder(order);
     if (res?.success) {
       clearOrder();
       router.push("/123/dashboard");
+      console.log(res);
+    } else {
+      setLoading(false);
+      console.log(res);
     }
   };
 
   return (
     <div className="p-4 lg:p-10 flex flex-col lg:flex-row gap-4">
-      <div className="w-full lg:w-[70%] ">
-        <div className="p-4 rounded-lg bg-card text-card-foreground">
-          <div className="flex items-center text-xs font-semibold gap-1 my-2">
-            <p className="w-[25%] text-center">Repair Device</p>
-            <p className="w-[15%] text-center">IMEI</p>
-            <p className="w-[15%] text-center">Password</p>
-            <p className="w-[15%] text-center">Due Date</p>
-            <p className="w-[15%] text-center">Repair Status</p>
-            <p className="w-[15%] text-center">Price</p>
-            <p className="">Actions</p>
-          </div>
-          {order?.orderServices.map((item, index) => (
-            <div key={index} className="flex items-center text-xs gap-1 my-2">
-              <p className="w-[25%] text-center text-primary">
-                {item.repairServiceType} - {item.name}
-              </p>
-              <p className="w-[15%] text-center">
-                <Input
-                  placeholder="IMEI/SN"
-                  value={item.imei || ""}
-                  onChange={(e) => handleInputChange(e, item.serviceId, "imei")}
-                />
-              </p>
-              <p className="w-[15%] text-center">
-                <Input
-                  placeholder="Password"
-                  value={item.password || ""}
-                  onChange={(e) =>
-                    handleInputChange(e, item.serviceId, "password")
-                  }
-                />
-              </p>
-              <p className="w-[15%] text-center">
-                <input
-                  type="date"
-                  value={item.dueDate || ""}
-                  className="bg-background p-3 rounded-md ring-1 ring-white text-foreground"
-                  onChange={(e) => handleDateChange(e, item.serviceId)}
-                />
-              </p>
-              <p className="w-[15%] text-center">
-                <select
-                  value={item.status || ""}
-                  onChange={(e) => handleSelectChange(e, item.serviceId)}
-                  className="bg-background p-3 rounded-md ring-1 ring-white"
-                >
-                  <option value="">Select Status</option>
-                  <option value="WAITING_FOR_PARTS">Waiting for Parts</option>
-                  <option value="WORKING_ON_IT">Working on it</option>
-                  <option value="PENDING">Pending</option>
-                  <option value="FIXED">Fixed</option>
-                  <option value="PICKED_UP">Picked Up</option>
-                </select>
-              </p>
-              <p className="w-[15%] text-center">${item.price || "0.0"}</p>
-              <p
-                className="hover:bg-white transition-all duration-300 p-2 rounded-md"
-                onClick={() => removeService(item.serviceId)}
-              >
-                <Trash2 className="text-destructive size-4 cursor-pointer" />
-              </p>
-            </div>
-          ))}
+      <div className="w-full lg:w-[70%]">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <AddProductToCartModal products={products} />
+          <Button>Add Custom Item</Button>
         </div>
-        {/* <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
-           TODO: 
-          <p>Payment</p>
-        </div> */}
+
+        {/* PRODUCT TABLE */}
+        {order?.orderServices.some((item) => item.type === "PRODUCT") && (
+          <div className="p-4 rounded-lg bg-card text-card-foreground">
+            <div className="flex items-center text-xs font-semibold gap-1 my-2">
+              <p className="w-[40%] text-center">Product</p>
+              <p className="w-[20%] text-center">Quantity</p>
+              <p className="w-[20%] text-center">Price</p>
+              <p className="">Actions</p>
+            </div>
+
+            {/* Product Rows */}
+            {order?.orderServices
+              .filter((item) => item.type === "PRODUCT")
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center text-xs gap-1 my-2"
+                >
+                  <p className="w-[40%] text-center text-primary">
+                    {item.name}
+                  </p>
+                  <p className="w-[20%] text-center">
+                    <Input
+                      placeholder="Quantity"
+                      value={item.quantity || ""}
+                      onChange={(e) =>
+                        updateService(item.serviceId, {
+                          quantity: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </p>
+                  <p className="w-[20%] text-center">${item.price || "0.0"}</p>
+                  <p
+                    className="hover:bg-white transition-all duration-300 p-2 rounded-md"
+                    onClick={() => removeService(item.serviceId)}
+                  >
+                    <Trash2 className="text-destructive size-4 cursor-pointer" />
+                  </p>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {/* REPAIR TABLE */}
+        {order?.orderServices.some((item) => item.type === "REPAIR") && (
+          <div className="p-4 rounded-lg bg-card text-card-foreground">
+            <div className="flex items-center text-xs font-semibold gap-1 my-2">
+              <p className="w-[25%] text-center">Repair Device</p>
+              <p className="w-[15%] text-center">IMEI</p>
+              <p className="w-[15%] text-center">Password</p>
+              <p className="w-[15%] text-center">Due Date</p>
+              <p className="w-[15%] text-center">Repair Status</p>
+              <p className="w-[15%] text-center">Price</p>
+              <p className="">Actions</p>
+            </div>
+
+            {/* Repair Rows */}
+            {order?.orderServices
+              .filter((item) => item.type === "REPAIR")
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className="flex items-center text-xs gap-1 my-2"
+                >
+                  <p className="w-[25%] text-center text-primary">
+                    {item.type === "REPAIR" && `${item.repairServiceType} - `}
+                    {item.name}
+                  </p>
+
+                  <p className="w-[15%] text-center">
+                    <Input
+                      placeholder="IMEI/SN"
+                      value={item.imei || ""}
+                      onChange={(e) =>
+                        handleInputChange(e, item.serviceId, "imei")
+                      }
+                    />
+                  </p>
+                  <p className="w-[15%] text-center">
+                    <Input
+                      placeholder="Password"
+                      value={item.password || ""}
+                      onChange={(e) =>
+                        handleInputChange(e, item.serviceId, "password")
+                      }
+                    />
+                  </p>
+                  <p className="w-[15%] text-center">
+                    <input
+                      type="date"
+                      value={item.dueDate || ""}
+                      className="bg-background p-3 rounded-md ring-1 ring-white text-foreground"
+                      onChange={(e) => handleDateChange(e, item.serviceId)}
+                    />
+                  </p>
+                  <p className="w-[15%] text-center">
+                    <select
+                      value={item.status || ""}
+                      onChange={(e) => handleSelectChange(e, item.serviceId)}
+                      className="bg-background p-3 rounded-md ring-1 ring-white"
+                    >
+                      <option value="">Select Status</option>
+                      <option value="WAITING_FOR_PARTS">
+                        Waiting for Parts
+                      </option>
+                      <option value="WORKING_ON_IT">Working on it</option>
+                      <option value="PENDING">Pending</option>
+                      <option value="FIXED">Fixed</option>
+                      <option value="PICKED_UP">Picked Up</option>
+                    </select>
+                  </p>
+                  <p className="w-[15%] text-center">${item.price || "0.0"}</p>
+                  <p
+                    className="hover:bg-white transition-all duration-300 p-2 rounded-md"
+                    onClick={() => removeService(item.serviceId)}
+                  >
+                    <Trash2 className="text-destructive size-4 cursor-pointer" />
+                  </p>
+                </div>
+              ))}
+          </div>
+        )}
       </div>
+
+      {/* Right Sidebar */}
       <div className="w-full lg:w-[30%]">
         <div className="p-4 rounded-lg bg-card text-card-foreground">
           <div className="w-full flex flex-col gap-2">
@@ -209,6 +280,7 @@ export default function Cart() {
             <AddCustomerModal />
           </div>
         </div>
+
         <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
           <Label>Order Notes</Label>
           <Input
@@ -254,21 +326,20 @@ export default function Cart() {
             </select>
           </div>
         </div>
-        <div className="my-4 p-4 rounded-lg bg-card text-card-foreground">
-          <Button
-            onClick={() => clearOrder()}
-            className="w-full"
-            variant={"destructive"}
-          >
-            Clear Cart
-          </Button>
-          <Button className="w-full" variant={"link"}>
-            Add Repair Device
-          </Button>
-          <Button onClick={handleSubmit} className="w-full">
-            Checkout
-          </Button>
-        </div>
+
+        <Button
+          onClick={() => clearOrder()}
+          className="w-full"
+          variant={"destructive"}
+        >
+          Clear Cart
+        </Button>
+        <Button className="w-full" variant={"link"}>
+          <Link href={`/123/create-repair`}>Add Repair Device</Link>
+        </Button>
+        <Button disabled={loading} onClick={handleSubmit} className="w-full">
+          Checkout
+        </Button>
       </div>
     </div>
   );

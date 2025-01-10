@@ -21,7 +21,7 @@ type Service = {
 };
 
 export function AllServices({ services }: any) {
-  const { addServices } = useCartStore();
+  const { addServices, updateOrderDetails, order } = useCartStore();
 
   const [selectedServices, setSelectedServices] = useState<Service[]>([]);
   const router = useRouter();
@@ -79,6 +79,7 @@ export function AllServices({ services }: any) {
       repairServiceType: service.name,
       serviceId: service.repairService.id,
       price: service.repairService.price,
+      type: "REPAIR",
     }));
 
     addServices(orderServices);

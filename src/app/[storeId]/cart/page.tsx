@@ -1,9 +1,11 @@
+import { getAllProducts } from "@/actions/products";
 import Cart from "./cart";
 
-export default function CartPage() {
+export default async function CartPage() {
+  const products = await getAllProducts();
   return (
     <div>
-      <Cart />
+      <Cart products={products} />
     </div>
   );
 }
