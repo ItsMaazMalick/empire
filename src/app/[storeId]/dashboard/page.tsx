@@ -1,3 +1,9 @@
+import {
+  getTotalOrdersToday,
+  getTotalRepairsToday,
+  getTotalSalesToday,
+  getTotalWaitingToday,
+} from "@/actions/order";
 import { Button } from "@/components/ui/button";
 import {
   Calculator,
@@ -18,6 +24,10 @@ export default async function DashboardPage({
   params: Promise<{ storeId: string }>;
 }) {
   const storeId = await (await params)?.storeId;
+  const orders = await getTotalOrdersToday();
+  const sales = await getTotalSalesToday();
+  const waiting = await getTotalWaitingToday();
+  const repairs = await getTotalRepairsToday();
   return (
     <div className="p-4 lg:px-32 grid grid-cols-3 gap-4">
       <Link
@@ -64,20 +74,20 @@ export default async function DashboardPage({
         <p>Here&apos;s what&apos;s happening with your store today</p>
         <div>
           <p className="font-bold text-primary">Total Sales</p>
-          <p className="font-semibold">$0.0</p>
+          <p className="font-semibold">${sales}</p>
         </div>
         <div className="grid grid-cols-3">
           <div className="p-2 ring-1 ring-secondary-foreground text-center">
             <p>Orders</p>
-            <p>0</p>
+            <p>{orders}</p>
           </div>
           <div className="p-2 ring-1 ring-secondary-foreground text-center">
             <p>Repairs</p>
-            <p>0</p>
+            <p>{repairs}</p>
           </div>
           <div className="p-2 ring-1 ring-secondary-foreground text-center text-xs">
             <p>Waiting to be fixed</p>
-            <p>0</p>
+            <p>{waiting}</p>
           </div>
         </div>
       </div>

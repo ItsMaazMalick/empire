@@ -90,6 +90,7 @@ export async function getAllOrders() {
       include: {
         customer: true,
         orderItems: true,
+        orderProducts: true,
       },
       orderBy: {
         updatedAt: "desc",
@@ -119,6 +120,11 @@ export async function getOrderById(id: string) {
                 },
               },
             },
+          },
+        },
+        orderProducts: {
+          include: {
+            orderProduct: true,
           },
         },
       },
@@ -157,5 +163,236 @@ export async function updateOrderItemStatus(
       success: false,
       message: "Something went wrong",
     };
+  }
+}
+
+export async function getFinances() {
+  try {
+    // Calculate Net Sales
+    const orders = await prisma.order.findMany({
+      include: {
+        orderItems: {
+          include: {
+            orderService: true,
+          },
+        },
+        orderProducts: {
+          include: {
+            orderProduct: true,
+          },
+        },
+      },
+    });
+
+    let netSales = 0;
+    let totalCost = 0;
+
+    // Calculate totals
+    for (const order of orders) {
+      netSales += order.price;
+
+      // Calculate costs from repair services
+      for (const item of order.orderItems) {
+        totalCost += item.orderService.cost * item.quantity;
+      }
+
+      // Calculate costs from products
+      for (const product of order.orderProducts) {
+        totalCost += product.orderProduct.cost * product.quantity;
+      }
+    }
+
+    // Calculate Gross Profit and Margin
+    const grossProfit = netSales - totalCost;
+    const grossMargin = netSales > 0 ? (grossProfit / netSales) * 100 : 0;
+
+    // Get sales by type
+    const productSales = orders.reduce(
+      (acc, order) =>
+        acc +
+        order.orderProducts.reduce(
+          (sum, product) => sum + product.orderProduct.price * product.quantity,
+          0
+        ),
+      0
+    );
+
+    const repairSales = orders.reduce(
+      (acc, order) =>
+        acc +
+        order.orderItems.reduce(
+          (sum, item) => sum + item.orderService.price * item.quantity,
+          0
+        ),
+      0
+    );
+
+    // Get sales by location
+    const salesByLocation = await prisma.order.groupBy({
+      by: ["userId"],
+      _sum: {
+        price: true,
+      },
+      where: {
+        user: {
+          store: {
+            name: "Empire", // You might want to make this dynamic
+          },
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: {
+        netSales,
+        grossProfit,
+        grossMargin,
+        salesByType: {
+          products: productSales,
+          repairs: repairSales,
+        },
+        salesByLocation: salesByLocation.reduce(
+          (acc, location) => ({
+            ...acc,
+            [location.userId]: location._sum.price || 0,
+          }),
+          {}
+        ),
+      },
+    };
+  } catch (error) {
+    console.error("Failed to fetch metrics:", error);
+    return { success: false, error: "Failed to fetch metrics" };
+  }
+}
+
+export async function getTotalSalesToday() {
+  try {
+    // Get the start of today and end of today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set to the beginning of today (midnight)
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set to the end of today (just before midnight)
+
+    // Query to count orders updated today
+    const orders = await prisma.order.count({
+      where: {
+        AND: [
+          {
+            updatedAt: {
+              gte: startOfDay, // Greater than or equal to the start of today
+              lte: endOfDay, // Less than or equal to the end of today
+            },
+          },
+          {
+            orderStatus: "PAID" || "PARTIALLY_PAID",
+          },
+        ],
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getTotalRepairsToday() {
+  try {
+    // Get the start of today and end of today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set to the beginning of today (midnight)
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set to the end of today (just before midnight)
+
+    // Query to count repair orders created or updated today
+    const orders = await prisma.order.count({
+      where: {
+        AND: [
+          {
+            orderItems: {
+              some: {},
+            },
+          },
+          {
+            updatedAt: {
+              gte: startOfDay,
+              lte: endOfDay,
+            },
+          },
+        ],
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    console.error("Error fetching total repairs today:", error);
+    throw new Error("Failed to fetch total repairs today");
+  }
+}
+
+export async function getTotalWaitingToday() {
+  try {
+    // Get the start of today and end of today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set to the beginning of today (midnight)
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set to the end of today (just before midnight)
+
+    // Query to count orders updated today
+    const orders = await prisma.order.count({
+      where: {
+        orderItems: {
+          some: {
+            AND: [
+              {
+                updatedAt: {
+                  gte: startOfDay, // Greater than or equal to the start of today
+                  lte: endOfDay, // Less than or equal to the end of today
+                },
+              },
+              {
+                repairStatus: "WAITING_FOR_PARTS" || "WORKING_ON_IT",
+              },
+            ],
+          },
+        },
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+export async function getTotalOrdersToday() {
+  try {
+    // Get the start of today and end of today
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set to the beginning of today (midnight)
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set to the end of today (just before midnight)
+
+    // Query to count orders updated today
+    const orders = await prisma.order.count({
+      where: {
+        updatedAt: {
+          gte: startOfDay, // Greater than or equal to the start of today
+          lte: endOfDay, // Less than or equal to the end of today
+        },
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }

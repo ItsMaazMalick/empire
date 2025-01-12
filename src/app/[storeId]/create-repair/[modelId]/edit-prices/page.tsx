@@ -2,6 +2,8 @@ import { getRepairServicesByModelId } from "@/actions/repair";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PricesSection } from "./prices-section";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 export default async function EditRepairPrices({
   params,
@@ -10,7 +12,6 @@ export default async function EditRepairPrices({
 }) {
   const modelId = await (await params)?.modelId;
   const services = await getRepairServicesByModelId(modelId);
-  console.log(services);
 
   return (
     <div className="grid grid-cols-2 gap-4 p-4 lg:px-10">
@@ -29,7 +30,9 @@ export default async function EditRepairPrices({
         </div>
       </div>
       <div className="p-4  rounded-lg bg-card">
-        <PricesSection services={services} />
+        <Suspense fallback={<Loader2 className="animate-spin" />}>
+          <PricesSection services={services} />
+        </Suspense>
       </div>
     </div>
   );

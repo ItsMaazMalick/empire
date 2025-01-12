@@ -119,7 +119,9 @@ export function OrdersTable({
                     order.orderStatus.slice(1)}
                 </Badge>
               </TableCell>
-              <TableCell>{order.orderItems?.length}</TableCell>
+              <TableCell>
+                {order.orderItems?.length + order.orderProducts?.length}
+              </TableCell>
               <TableCell>{order.customer?.name}</TableCell>
             </TableRow>
           ))}

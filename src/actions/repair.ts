@@ -37,6 +37,40 @@ export async function createRepairBrand(
     };
   }
 }
+export async function updateRepairBrand(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const brandName = formData.get("name") as string;
+    const brandId = formData.get("brandId") as string;
+    if (!brandName || !brandId) {
+      return {
+        success: false,
+        message: "All fields are required",
+      };
+    }
+
+    await prisma.repairBrand.update({
+      where: { id: brandId },
+      data: {
+        name: brandName,
+        storeId: session.user.storeId,
+      },
+    });
+    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    return {
+      success: true,
+      message: "Brand updated successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      success: false,
+      message: "Failed to add brand. Please try again.",
+    };
+  }
+}
 
 export async function createRepairSeries(
   prevState: ActionResponse | null,
@@ -67,6 +101,41 @@ export async function createRepairSeries(
     return {
       success: false,
       message: "Failed to add series. Please try again.",
+    };
+  }
+}
+
+export async function updateRepairSeries(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const seriesName = formData.get("name") as string;
+    const brandId = formData.get("brandId") as string;
+    const seriesId = formData.get("seriesId") as string;
+    if (!seriesName || !brandId || !seriesId) {
+      return {
+        success: false,
+        message: "All fields are required",
+      };
+    }
+
+    await prisma.repairSeries.update({
+      where: { id: seriesId },
+      data: {
+        name: seriesName,
+        brandId: brandId,
+      },
+    });
+    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    return {
+      success: true,
+      message: "Series updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update series. Please try again.",
     };
   }
 }
@@ -231,6 +300,39 @@ export async function createRepairModel(
     return {
       success: false,
       message: "Failed to add model. Please try again.",
+    };
+  }
+}
+
+export async function updateRepairModel(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const name = formData.get("name") as string;
+    const modelId = formData.get("modelId") as string;
+    if (!name || !modelId) {
+      return {
+        success: false,
+        message: "All fields are required",
+      };
+    }
+
+    await prisma.repairModel.update({
+      where: { id: modelId },
+      data: {
+        name,
+      },
+    });
+    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    return {
+      success: true,
+      message: "model updated successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update model. Please try again.",
     };
   }
 }

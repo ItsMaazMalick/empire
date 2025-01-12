@@ -15,18 +15,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { createRepairBrand } from "@/actions/repair";
+import { createRepairBrand, updateRepairBrand } from "@/actions/repair";
 
 const initialState = {
   success: false,
   message: "",
 };
 
-export function AddBrandModal() {
+export function AddBrandModal({
+  brand,
+  children,
+}: {
+  children: React.ReactNode;
+  brand?: any;
+}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [state, action, isPending] = useActionState(
-    createRepairBrand,
+    brand ? updateRepairBrand : createRepairBrand,
     initialState
   );
 
@@ -46,20 +52,11 @@ export function AddBrandModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Brand
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form action={action}>
           <DialogHeader>
-            <DialogTitle>Add Brand</DialogTitle>
+            <DialogTitle>{brand ? "Update" : "Add"} Brand</DialogTitle>
             <DialogDescription>
               Enter the name of the new brand you want to add.
             </DialogDescription>
@@ -69,7 +66,21 @@ export function AddBrandModal() {
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input id="name" name="name" className="col-span-3" />
+              <Input
+                defaultValue={brand?.name}
+                id="name"
+                name="name"
+                className="col-span-3"
+              />
+              {brand && (
+                <Input
+                  value={brand?.id}
+                  type="hidden"
+                  id="brandId"
+                  name="brandId"
+                  className="col-span-3"
+                />
+              )}
             </div>
           </div>
           <DialogFooter>

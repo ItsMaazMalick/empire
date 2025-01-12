@@ -3,6 +3,8 @@ import { DisplayRepairServicesModal } from "./display-repair-services-modal";
 import { AllServices } from "./all-services";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 export default async function CreateRepairModel({
   params,
@@ -21,7 +23,9 @@ export default async function CreateRepairModel({
           </Link>
         </Button>
       </div>
-      <AllServices services={services} />
+      <Suspense fallback={<Loader2 className="animate-spin" />}>
+        <AllServices services={services} />
+      </Suspense>
     </div>
   );
 }

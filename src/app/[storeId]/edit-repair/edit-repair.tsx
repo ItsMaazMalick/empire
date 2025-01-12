@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { Fragment, useState } from "react";
+import { ChevronDown, ChevronRight, Edit, Plus } from "lucide-react";
 import { AddBrandModal } from "./add-brand-modal";
 import { AddSeriesModal } from "./add-series-modal";
 import { AddModelModal } from "./add-model-modal";
 import { Brand } from "@/types/repair-brand";
+import { Button } from "@/components/ui/button";
 
 interface EditRepairProps {
   brands: Brand[];
@@ -42,7 +43,16 @@ export function EditRepair({ brands }: EditRepairProps) {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold">Menu Items</h1>
-          <AddBrandModal />
+          <AddBrandModal>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Brand
+            </Button>
+          </AddBrandModal>
         </div>
 
         <div className="space-y-2">
@@ -60,7 +70,24 @@ export function EditRepair({ brands }: EditRepairProps) {
                   )}
                   <span>{brand.name}</span>
                 </button>
-                <AddSeriesModal brandId={brand.id} />
+
+                <AddBrandModal brand={brand}>
+                  <div className="flex items-center gap-2 text-xs cursor-pointer">
+                    Edit {brand.name}
+                    <Edit className="size-3" />
+                  </div>
+                </AddBrandModal>
+
+                <AddSeriesModal brandId={brand.id}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Series Line
+                  </Button>
+                </AddSeriesModal>
               </div>
 
               {expandedBrands.includes(brand.id) && (
@@ -79,7 +106,22 @@ export function EditRepair({ brands }: EditRepairProps) {
                           )}
                           <span>{series.name}</span>
                         </button>
-                        <AddModelModal seriesId={series.id} />
+                        <AddSeriesModal brandId={brand.id} series={series}>
+                          <div className="flex items-center gap-2 text-xs cursor-pointer">
+                            Edit {series.name}
+                            <Edit className="size-3" />
+                          </div>
+                        </AddSeriesModal>
+                        <AddModelModal seriesId={series.id}>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Model
+                          </Button>
+                        </AddModelModal>
                       </div>
 
                       {expandedSeries.includes(series.id) && (
@@ -87,9 +129,16 @@ export function EditRepair({ brands }: EditRepairProps) {
                           {series.models.map((model) => (
                             <div
                               key={model.id}
-                              className="pl-6 py-1 hover:bg-blue-900/20 rounded transition-colors"
+                              className="flex items-center gap-4"
                             >
-                              {model.name}
+                              <div className="pl-6 py-1 hover:bg-blue-900/20 rounded transition-colors">
+                                {model.name}
+                              </div>
+                              <AddModelModal seriesId={series.id} model={model}>
+                                <div className="flex items-center gap-2 text-xs cursor-pointer">
+                                  <Edit className="size-3" />
+                                </div>
+                              </AddModelModal>
                             </div>
                           ))}
                         </div>

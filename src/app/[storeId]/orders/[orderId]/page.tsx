@@ -1,5 +1,7 @@
 import { getOrderById } from "@/actions/order";
 import { OrderPage } from "./order";
+import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 export default async function OrderDetailPage({
   params,
@@ -9,8 +11,8 @@ export default async function OrderDetailPage({
   const orderId = await (await params)?.orderId;
   const order = await getOrderById(orderId);
   return (
-    <div>
+    <Suspense fallback={<Loader2 className="animate-spin" />}>
       <OrderPage order={order} />
-    </div>
+    </Suspense>
   );
 }

@@ -13,7 +13,6 @@ import { OrderDetails } from "./order-details";
 import { OrderSidebar } from "./order-sidebar";
 
 export function OrderPage({ order }: any) {
-  console.log(order);
   return (
     <div className="min-h-screen bg-[#0B1121] text-white p-6">
       {/* Header */}

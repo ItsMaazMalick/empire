@@ -1,4 +1,4 @@
-import { createRepairModel } from "@/actions/repair";
+import { createRepairModel, updateRepairModel } from "@/actions/repair";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,18 +21,26 @@ const initialState = {
   message: "",
 };
 
-export function AddModelModal({ seriesId }: { seriesId: string }) {
+export function AddModelModal({
+  children,
+  seriesId,
+  model,
+}: {
+  children: React.ReactNode;
+  seriesId: string;
+  model?: any;
+}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [state, action, isPending] = useActionState(
-    createRepairModel,
+    model ? updateRepairModel : createRepairModel,
     initialState
   );
 
   useEffect(() => {
     if (state.success) {
       toast({
-        description: state.message || "Brand added successfully",
+        description: state.message || "Model added successfully",
       });
       setOpen(false);
     } else if (state.message) {
@@ -45,16 +53,7 @@ export function AddModelModal({ seriesId }: { seriesId: string }) {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Model
-          </Button>
-        </DialogTrigger>
+        <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <form action={action}>
             <DialogHeader>
@@ -68,8 +67,15 @@ export function AddModelModal({ seriesId }: { seriesId: string }) {
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input id="name" name="name" className="col-span-3" />
-                <Input type="hidden" name="seriesId" value={seriesId} />
+                <Input
+                  defaultValue={model?.name}
+                  id="name"
+                  name="name"
+                  className="col-span-3"
+                />
+                {model && (
+                  <Input type="hidden" name="modelId" value={model?.id} />
+                )}
               </div>
             </div>
 

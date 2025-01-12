@@ -28,46 +28,88 @@ export function OrderDetails({ order }: Props) {
     <div className="space-y-6">
       {/* Repair Details */}
       <div className="bg-[#1A2337] rounded-lg border border-gray-700">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent border-gray-700">
-              <TableHead>Repair device</TableHead>
-              <TableHead>IMEI/SN</TableHead>
-              <TableHead>Password</TableHead>
-              <TableHead>Due date</TableHead>
-              <TableHead className="flex items-center gap-2">
-                Repair status
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <HelpCircle className="w-4 h-4 text-gray-400" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Current repair status</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </TableHead>
-              <TableHead>Price</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {order.orderItems.map((item: any) => (
-              <Fragment key={item.id}>
-                <TableRow className="border-gray-700">
+        {order.orderItems && order.orderItems.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-gray-700">
+                <TableHead>Name</TableHead>
+                <TableHead>IMEI/SN</TableHead>
+                <TableHead>Password</TableHead>
+                <TableHead>Due date</TableHead>
+                <TableHead className="flex items-center gap-2">
+                  Repair status
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <HelpCircle className="w-4 h-4 text-gray-400" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Current repair status</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableHead>
+                <TableHead>Price</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {order.orderItems.map((item: any) => (
+                <Fragment key={item.id}>
+                  <TableRow className="border-gray-700">
+                    <TableCell className="text-blue-400">
+                      {item.orderService.repairServiceType.repairModel.name}
+                    </TableCell>
+                    <TableCell>{item.imei}</TableCell>
+                    <TableCell>{item.password}</TableCell>
+                    <TableCell>
+                      {item.dueDate
+                        ? new Date(item.dueDate).toLocaleString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      <UpdateServiceModal item={item} />
+                    </TableCell>
+                    <TableCell className="flex items-center gap-2">
+                      ${item.orderService.price.toFixed(2)}
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 border-gray-600"
+                      >
+                        <Printer className="w-4 h-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow className="border-gray-700">
+                    <TableCell colSpan={5} className="text-gray-400">
+                      {item.orderService.repairServiceType.name} -{" "}
+                      {item.orderService.name}
+                    </TableCell>
+                    <TableCell>${item.orderService.price.toFixed(2)}</TableCell>
+                  </TableRow>
+                </Fragment>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {order.orderProducts && order.orderProducts.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent border-gray-700">
+                <TableHead>Name</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Price</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {order.orderProducts.map((item: any) => (
+                <TableRow key={item.id} className="border-gray-700">
                   <TableCell className="text-blue-400">
-                    {item.orderService.repairServiceType.repairModel.name}
+                    {item.orderProduct.title}
                   </TableCell>
-                  <TableCell>{item.imei}</TableCell>
-                  <TableCell>{item.password}</TableCell>
-                  <TableCell>
-                    {item.dueDate.toLocaleString() ?? "N/A"}
-                  </TableCell>
-                  <TableCell>
-                    <UpdateServiceModal item={item} />
-                  </TableCell>
+                  <TableCell>{item.quantity}</TableCell>
                   <TableCell className="flex items-center gap-2">
-                    ${order.price}
+                    ${(item.orderProduct.price * item.quantity).toFixed(2)}
                     <Button
                       variant="outline"
                       size="icon"
@@ -77,17 +119,10 @@ export function OrderDetails({ order }: Props) {
                     </Button>
                   </TableCell>
                 </TableRow>
-                <TableRow className="border-gray-700">
-                  <TableCell colSpan={5} className="text-gray-400">
-                    {item.orderService.repairServiceType.name} -{" "}
-                    {item.orderService.name}
-                  </TableCell>
-                  <TableCell>${item.orderService.price}</TableCell>
-                </TableRow>
-              </Fragment>
-            ))}
-          </TableBody>
-        </Table>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
       {/* Payment Details */}
@@ -100,37 +135,12 @@ export function OrderDetails({ order }: Props) {
         </div>
 
         <div className="space-y-4">
-          {/* <div className="flex justify-between">
-            <span className="text-gray-400">Subtotal (1 item(s))</span>
-            <span>$0.00</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Discount</span>
-            <span>$0.00</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Estimated tax (0%)</span>
-            <span>$0.00</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Tax ID</span>
-            <span>-</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-400">Repair fee</span>
-            <span>$0.00</span>
-          </div> */}
           <div className="flex justify-between font-semibold">
             <span>Total</span>
-            <span>${order.price}</span>
+            <span>${order.price.toFixed(2)}</span>
           </div>
 
           <div className="pt-4 border-t border-gray-700">
-            {/* <div className="flex justify-between text-sm mb-4">
-              <span className="text-blue-400">Paid by customer</span>
-              <span>Cash: $0.00</span>
-            </div> */}
-
             <div className="grid grid-cols-2 gap-4">
               <Button variant="outline" className="border-gray-600">
                 Print thermal receipt

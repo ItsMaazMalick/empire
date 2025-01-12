@@ -53,14 +53,14 @@ const links = [
     id: 7,
     name: "Finance",
     icon: BadgeDollarSign,
-    href: "/",
+    href: "/123/finances",
   },
-  {
-    id: 8,
-    name: "Reports",
-    icon: ChartArea,
-    href: "/",
-  },
+  // {
+  //   id: 8,
+  //   name: "Reports",
+  //   icon: ChartArea,
+  //   href: "/",
+  // },
   // {
   //   id: 9,
   //   name: "Payouts",

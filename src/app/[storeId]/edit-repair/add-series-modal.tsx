@@ -1,4 +1,4 @@
-import { createRepairSeries } from "@/actions/repair";
+import { createRepairSeries, updateRepairSeries } from "@/actions/repair";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,18 +21,26 @@ const initialState = {
   message: "",
 };
 
-export function AddSeriesModal({ brandId }: { brandId: string }) {
+export function AddSeriesModal({
+  children,
+  brandId,
+  series,
+}: {
+  children: React.ReactNode;
+  brandId: string;
+  series?: any;
+}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [state, action, isPending] = useActionState(
-    createRepairSeries,
+    series ? updateRepairSeries : createRepairSeries,
     initialState
   );
 
   useEffect(() => {
     if (state.success) {
       toast({
-        description: state.message || "Brand added successfully",
+        description: state.message || "Series added successfully",
       });
       setOpen(false);
     } else if (state.message) {
@@ -45,20 +53,11 @@ export function AddSeriesModal({ brandId }: { brandId: string }) {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Series Line
-          </Button>
-        </DialogTrigger>
+        <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <form action={action}>
             <DialogHeader>
-              <DialogTitle>Add Series Line</DialogTitle>
+              <DialogTitle>{series ? "Update" : "Add"} Series Line</DialogTitle>
               {/* <DialogDescription>
               Make changes to your profile here. Click save when you're done.
             </DialogDescription> */}
@@ -68,8 +67,16 @@ export function AddSeriesModal({ brandId }: { brandId: string }) {
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input id="name" name="name" className="col-span-3" />
+                <Input
+                  defaultValue={series?.name}
+                  id="name"
+                  name="name"
+                  className="col-span-3"
+                />
                 <Input type="hidden" name="brandId" value={brandId} />
+                {series && (
+                  <Input type="hidden" name="seriesId" value={series?.id} />
+                )}
               </div>
             </div>
 
