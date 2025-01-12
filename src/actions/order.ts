@@ -287,7 +287,9 @@ export async function getTotalSalesToday() {
             },
           },
           {
-            orderStatus: "PAID" || "PARTIALLY_PAID",
+            orderStatus: {
+              in: ["PAID", "PARTIALLY_PAID"],
+            },
           },
         ],
       },
@@ -295,8 +297,8 @@ export async function getTotalSalesToday() {
 
     return orders;
   } catch (error) {
-    console.error(error);
-    return null;
+    console.error("Error fetching total sales today:", error);
+    throw new Error("Failed to fetch total sales today");
   }
 }
 
@@ -357,7 +359,7 @@ export async function getTotalWaitingToday() {
                 },
               },
               {
-                repairStatus: "WAITING_FOR_PARTS" || "WORKING_ON_IT",
+                repairStatus: { in: ["WAITING_FOR_PARTS" || "WORKING_ON_IT"] },
               },
             ],
           },
