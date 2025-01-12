@@ -279,19 +279,10 @@ export async function getTotalSalesToday() {
     // Query to count orders updated today
     const orders = await prisma.order.count({
       where: {
-        AND: [
-          {
-            updatedAt: {
-              gte: startOfDay, // Greater than or equal to the start of today
-              lte: endOfDay, // Less than or equal to the end of today
-            },
-          },
-          {
-            orderStatus: {
-              in: ["PAID", "PARTIALLY_PAID"],
-            },
-          },
-        ],
+        updatedAt: {
+          gte: startOfDay, // Greater than or equal to the start of today
+          lte: endOfDay, // Less than or equal to the end of today
+        },
       },
     });
 
@@ -351,17 +342,10 @@ export async function getTotalWaitingToday() {
       where: {
         orderItems: {
           some: {
-            AND: [
-              {
-                updatedAt: {
-                  gte: startOfDay, // Greater than or equal to the start of today
-                  lte: endOfDay, // Less than or equal to the end of today
-                },
-              },
-              {
-                repairStatus: { in: ["WAITING_FOR_PARTS" || "WORKING_ON_IT"] },
-              },
-            ],
+            updatedAt: {
+              gte: startOfDay, // Greater than or equal to the start of today
+              lte: endOfDay, // Less than or equal to the end of today
+            },
           },
         },
       },
