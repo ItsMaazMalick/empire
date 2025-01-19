@@ -20,8 +20,10 @@ import {
 } from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Edit } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { AddProductModal } from "./add-product-modal";
+import { deleteProduct } from "@/actions/products";
+import { Button } from "@/components/ui/button";
 
 // Sample data - replace with your actual data source
 
@@ -41,6 +43,7 @@ export function ProductsTable({
   categories,
 }: OrdersTableProps) {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Filter orders based on active tab and search query
   const filteredOrders = products.filter((order: any) => {
@@ -68,6 +71,13 @@ export function ProductsTable({
         ? []
         : filteredOrders.map((order: any) => order.id)
     );
+  };
+
+  const handleDelete = async (id: string) => {
+    setLoading(true);
+    const res = await deleteProduct(id);
+    console.log(res);
+    setLoading(false);
   };
 
   return (
@@ -125,7 +135,8 @@ export function ProductsTable({
               <TableCell>{order.cost}</TableCell>
               <TableCell>{order.category.name}</TableCell>
               <TableCell>{order.vendor.name}</TableCell>
-              <TableCell>
+
+              <TableCell className="flex items-center gap-2">
                 <AddProductModal
                   vendors={vendors}
                   categories={categories}
@@ -133,6 +144,14 @@ export function ProductsTable({
                 >
                   <Edit className="size-4 cursor-pointer" />
                 </AddProductModal>
+                <Button
+                  variant={"outline"}
+                  disabled={loading}
+                  className=""
+                  onClick={() => handleDelete(order.id)}
+                >
+                  <Trash2 className="text-destructive" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}

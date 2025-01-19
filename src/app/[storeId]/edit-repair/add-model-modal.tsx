@@ -73,6 +73,7 @@ export function AddModelModal({
                   name="name"
                   className="col-span-3"
                 />
+                <Input type="hidden" name="seriesId" value={seriesId} />
                 {model && (
                   <Input type="hidden" name="modelId" value={model?.id} />
                 )}

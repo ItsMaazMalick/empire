@@ -159,3 +159,26 @@ export async function getOrderById(id: string) {
     return null;
   }
 }
+
+export async function deleteProduct(id: string) {
+  try {
+    // First, delete all related OrderProduct entries
+    await prisma.orderProduct.deleteMany({
+      where: { orderProductId: id },
+    });
+    await prisma.product.delete({
+      where: { id },
+    });
+    revalidatePath("/123/products");
+    return {
+      success: true,
+      message: "Product deleted successfully",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to delete product",
+      error,
+    };
+  }
+}

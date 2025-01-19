@@ -421,3 +421,84 @@ export async function updateRepairPrice(
     };
   }
 }
+
+export async function deleteRepairBrand(id: string) {
+  try {
+    await prisma.repairBrand.delete({ where: { id } });
+    revalidatePath("/123/edit-repair");
+    return { success: true, message: "Brand deleted successfully" };
+  } catch (error) {
+    return { success: false, message: "Failed to delete brand" };
+  }
+}
+export async function deleteRepairSeries(id: string) {
+  try {
+    await prisma.repairSeries.delete({ where: { id } });
+    revalidatePath("/123/edit-repair");
+    return { success: true, message: "Series deleted successfully" };
+  } catch (error) {
+    return { success: false, message: "Series to delete brand" };
+  }
+}
+
+export async function deleteRepairModel(id: string) {
+  try {
+    // Start a transaction to ensure all operations are performed or none
+    await prisma.$transaction(async (tx) => {
+      // 1. Find all RepairServiceTypes associated with this RepairModel
+      const repairServiceTypes = await tx.repairServiceType.findMany({
+        where: { repairModelId: id },
+        select: { id: true },
+      });
+
+      // 2. Find all RepairServices associated with these RepairServiceTypes
+      const repairServiceIds = await tx.repairService.findMany({
+        where: {
+          repairServiceTypeId: {
+            in: repairServiceTypes.map((rst) => rst.id),
+          },
+        },
+        select: { id: true },
+      });
+
+      // 3. Delete all OrderItems associated with these RepairServices
+      await tx.orderItem.deleteMany({
+        where: {
+          orderServiceId: {
+            in: repairServiceIds.map((rs) => rs.id),
+          },
+        },
+      });
+
+      // 4. Delete all RepairServices associated with these RepairServiceTypes
+      await tx.repairService.deleteMany({
+        where: {
+          repairServiceTypeId: {
+            in: repairServiceTypes.map((rst) => rst.id),
+          },
+        },
+      });
+
+      // 5. Delete all RepairServiceTypes associated with this RepairModel
+      await tx.repairServiceType.deleteMany({
+        where: { repairModelId: id },
+      });
+
+      // 6. Finally, delete the RepairModel
+      await tx.repairModel.delete({ where: { id } });
+    });
+
+    revalidatePath("/123/edit-repair");
+    return {
+      success: true,
+      message: "Model and associated data deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting repair model:", error);
+    return {
+      success: false,
+      message: "Failed to delete repair model",
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}

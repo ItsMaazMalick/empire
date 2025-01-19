@@ -67,7 +67,7 @@ model Product {
   updatedAt     DateTime       @updatedAt
   vendor        Vendor         @relation(fields: [vendorId], references: [id])
   vendorId      String         @db.ObjectId
-  category      Category       @relation(fields: [categoryId], references: [id])
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String         @db.ObjectId
   orderProducts OrderProduct[]
 }
@@ -154,7 +154,7 @@ model Order {
   orderNotes    String?
   tags          String[]
   repairNotes   String?
-  user          User           @relation(fields: [userId], references: [id])
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String         @db.ObjectId
   orderItems    OrderItem[]
   orderProducts OrderProduct[]
@@ -175,7 +175,7 @@ model OrderItem {
 
   orderServiceId String        @db.ObjectId
   orderService   RepairService @relation(fields: [orderServiceId], references: [id])
-  order          Order         @relation(fields: [orderId], references: [id])
+  order          Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId        String        @db.ObjectId
 
   createdAt DateTime @default(now())
@@ -188,7 +188,7 @@ model OrderProduct {
 
   orderProductId String  @db.ObjectId
   orderProduct   Product @relation(fields: [orderProductId], references: [id])
-  order          Order   @relation(fields: [orderId], references: [id])
+  order          Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId        String  @db.ObjectId
 
   createdAt DateTime @default(now())

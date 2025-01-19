@@ -1,18 +1,24 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import { ChevronDown, ChevronRight, Edit, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Edit, Plus, Trash2 } from "lucide-react";
 import { AddBrandModal } from "./add-brand-modal";
 import { AddSeriesModal } from "./add-series-modal";
 import { AddModelModal } from "./add-model-modal";
 import { Brand } from "@/types/repair-brand";
 import { Button } from "@/components/ui/button";
+import {
+  deleteRepairBrand,
+  deleteRepairModel,
+  deleteRepairSeries,
+} from "@/actions/repair";
 
 interface EditRepairProps {
   brands: Brand[];
 }
 
 export function EditRepair({ brands }: EditRepairProps) {
+  const [loading, setLoading] = useState(false);
   const [expandedBrands, setExpandedBrands] = useState<string[]>(
     brands.length > 0 ? [brands[0]?.id] : []
   );
@@ -36,6 +42,22 @@ export function EditRepair({ brands }: EditRepairProps) {
         ? prev.filter((id) => id !== seriesId)
         : [...prev, seriesId]
     );
+  };
+
+  const handleDeleteBrand = async (id: string) => {
+    setLoading(true);
+    const res = await deleteRepairBrand(id);
+    setLoading(false);
+  };
+  const handleDeleteSeries = async (id: string) => {
+    setLoading(true);
+    const res = await deleteRepairSeries(id);
+    setLoading(false);
+  };
+  const handleDeleteModel = async (id: string) => {
+    setLoading(true);
+    const res = await deleteRepairModel(id);
+    setLoading(false);
   };
 
   return (
@@ -71,12 +93,21 @@ export function EditRepair({ brands }: EditRepairProps) {
                   <span>{brand.name}</span>
                 </button>
 
-                <AddBrandModal brand={brand}>
-                  <div className="flex items-center gap-2 text-xs cursor-pointer">
-                    Edit {brand.name}
-                    <Edit className="size-3" />
-                  </div>
-                </AddBrandModal>
+                <div className="flex items-center gap-4">
+                  <AddBrandModal brand={brand}>
+                    <div className="flex items-center gap-2 text-xs cursor-pointer">
+                      Edit {brand.name}
+                      <Edit className="size-3" />
+                    </div>
+                  </AddBrandModal>
+
+                  <button
+                    disabled={loading}
+                    onClick={() => handleDeleteBrand(brand.id)}
+                  >
+                    <Trash2 className="size-4 text-destructive" />
+                  </button>
+                </div>
 
                 <AddSeriesModal brandId={brand.id}>
                   <Button
@@ -106,12 +137,20 @@ export function EditRepair({ brands }: EditRepairProps) {
                           )}
                           <span>{series.name}</span>
                         </button>
-                        <AddSeriesModal brandId={brand.id} series={series}>
-                          <div className="flex items-center gap-2 text-xs cursor-pointer">
-                            Edit {series.name}
-                            <Edit className="size-3" />
-                          </div>
-                        </AddSeriesModal>
+                        <div className="flex items-center gap-4">
+                          <AddSeriesModal brandId={brand.id} series={series}>
+                            <div className="flex items-center gap-2 text-xs cursor-pointer">
+                              Edit {series.name}
+                              <Edit className="size-3" />
+                            </div>
+                          </AddSeriesModal>
+                          <button
+                            disabled={loading}
+                            onClick={() => handleDeleteSeries(series.id)}
+                          >
+                            <Trash2 className="size-4 text-destructive" />
+                          </button>
+                        </div>
                         <AddModelModal seriesId={series.id}>
                           <Button
                             variant="ghost"
@@ -134,11 +173,22 @@ export function EditRepair({ brands }: EditRepairProps) {
                               <div className="pl-6 py-1 hover:bg-blue-900/20 rounded transition-colors">
                                 {model.name}
                               </div>
-                              <AddModelModal seriesId={series.id} model={model}>
-                                <div className="flex items-center gap-2 text-xs cursor-pointer">
-                                  <Edit className="size-3" />
-                                </div>
-                              </AddModelModal>
+                              <div className="flex items-center gap-4">
+                                <AddModelModal
+                                  seriesId={series.id}
+                                  model={model}
+                                >
+                                  <div className="flex items-center gap-2 text-xs cursor-pointer">
+                                    <Edit className="size-3" />
+                                  </div>
+                                </AddModelModal>
+                                <button
+                                  disabled={loading}
+                                  onClick={() => handleDeleteModel(model.id)}
+                                >
+                                  <Trash2 className="size-4 text-destructive" />
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
