@@ -120,11 +120,3 @@ export const brandsData = [
     ],
   },
 ];
-
-export const session = {
-  user: {
-    id: "677a49060a0e9de097b04910",
-    storeId: "677a48e50a0e9de097b0490a",
-    role: "OWNER",
-  },
-};

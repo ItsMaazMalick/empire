@@ -7,19 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Store {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  code String @unique
-  name String
-
-  users User[]
-
-  repairBrands RepairBrand[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model User {
   id                        String   @id @default(auto()) @map("_id") @db.ObjectId
   name                      String
@@ -33,14 +20,33 @@ model User {
   serviceProductsPercentage Float?
   repairsPercentage         Float?
 
-  role    Role
-  status  Status @default(INACTIVE)
-  storeId String @db.ObjectId
-  store   Store  @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  role   Role
+  status Status @default(INACTIVE)
+
+  storeId String[] @db.ObjectId
+  stores  Store[]  @relation(fields: [storeId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order     Order[]
+}
+
+model Store {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  code String @unique
+  name String
+
+  userId String[] @db.ObjectId
+  user   User[]   @relation(fields: [userId], references: [id])
+
+  repairBrands RepairBrand[]
+
+  categories Category[]
+  vendors    Vendor[]
+  customers  Customer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
@@ -49,6 +55,8 @@ model Category {
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  store     Store     @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  storeId   String    @db.ObjectId
 }
 
 model Product {
@@ -81,6 +89,8 @@ model Vendor {
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  store     Store     @relation(fields: [storeId], references: [id])
+  storeId   String    @db.ObjectId
 }
 
 model RepairBrand {
@@ -146,6 +156,8 @@ model Customer {
   orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  store     Store    @relation(fields: [storeId], references: [id])
+  storeId   String   @db.ObjectId
 }
 
 model Order {

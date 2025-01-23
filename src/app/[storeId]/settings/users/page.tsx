@@ -15,7 +15,7 @@ import { CreateUserModal } from "./create-user-modal";
 
 export default async function UsersPage() {
   const users = await getUsers();
-  console.log(users);
+
   return (
     <div className="p-4 lg:p-10 h-[calc(100vh-150px)] overflow-y-auto">
       <CreateUserModal />

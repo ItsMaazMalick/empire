@@ -1,11 +1,19 @@
+import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getUserFromSession();
+  const store = await getStoreFromSession();
+  if (!user && !store) {
+    return redirect(`/auth/login`);
+  }
+
   return (
     <div className="">
       <Navbar />

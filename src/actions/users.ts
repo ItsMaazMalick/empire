@@ -1,20 +1,26 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
+import { Role, Status } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcryptjs";
+import { getStoreFromSession } from "./session";
 
 export async function createUser(
   prevState: ActionResponse | null,
   formData: FormData
 ): Promise<ActionResponse> {
   try {
+    const store = await getStoreFromSession();
     const userData = {
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      storeId: session.user.storeId,
+      password: formData.get("password") as string,
+      status: formData.get("status") as Status | null | undefined,
+      role: formData.get("role") as Role | null | undefined,
+
       calculateCommition: formData.get("calculateCommition") as string,
       refundCommition: formData.get("refundCommition") as string,
       accessoriesPercentage: Number(formData.get("accessoriesPercentage")),
@@ -36,15 +42,21 @@ export async function createUser(
         message: "User already exists",
       };
     }
+    let hashedPassword = "";
+    if (userData.password) {
+      hashedPassword = await bcrypt.hash(userData.password, 10);
+    }
+    hashedPassword = await bcrypt.hash(userData.email, 10);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         name: userData.name,
         email: userData.email,
         phone: userData.phone,
-        storeId: userData.storeId,
-        status: "ACTIVE",
-        role: "MANAGER",
+
+        password: hashedPassword,
+        status: userData.status ?? "ACTIVE",
+        role: userData.role ?? "MANAGER",
         calculateCommition:
           userData.calculateCommition === "sales" ? "sales" : "profit",
         refundCommition: userData.refundCommition === "yes" ? true : false,
@@ -54,13 +66,26 @@ export async function createUser(
         repairsPercentage: userData.repairsPercentage,
       },
     });
-    revalidatePath(`/${session.user.storeId}/settings/users`);
+
+    if (store) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          stores: {
+            connect: {
+              id: store.id,
+            },
+          },
+        },
+      });
+    }
+
+    // revalidatePath(`/${store.id}/settings/users`);
     return {
       success: true,
       message: "user added successfully",
     };
   } catch (error) {
-    console.log(error);
     return {
       success: false,
       message: "Failed to add user. Please try again.",
@@ -72,12 +97,12 @@ export async function updateUser(
   formData: FormData
 ): Promise<ActionResponse> {
   try {
+    const store = await getStoreFromSession();
     const userData = {
       id: formData.get("id") as string,
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
-      storeId: session.user.storeId,
       calculateCommition: formData.get("calculateCommition") as string,
       refundCommition: formData.get("refundCommition") as string,
       accessoriesPercentage: Number(formData.get("accessoriesPercentage")),
@@ -93,7 +118,7 @@ export async function updateUser(
       },
     });
 
-    if (!existingUser) {
+    if (!existingUser || !store) {
       return {
         success: false,
         message: "User not found",
@@ -108,7 +133,7 @@ export async function updateUser(
         name: userData.name,
         email: userData.email,
         phone: userData.phone,
-        storeId: userData.storeId,
+
         status: "ACTIVE",
         role: "MANAGER",
         calculateCommition:
@@ -118,9 +143,14 @@ export async function updateUser(
         electronicsPercentage: userData.electronicsPercentage,
         serviceProductsPercentage: userData.serviceProductsPercentage,
         repairsPercentage: userData.repairsPercentage,
+        stores: {
+          connect: {
+            id: store.id,
+          },
+        },
       },
     });
-    revalidatePath(`/${session.user.storeId}/settings/users`);
+    revalidatePath(`/${store.id}/settings/users`);
     return {
       success: true,
       message: "user updated successfully",
@@ -136,8 +166,18 @@ export async function updateUser(
 
 export async function getUsers() {
   try {
+    const store = await getStoreFromSession();
+    if (!store) {
+      return null;
+    }
     const users = await prisma.user.findMany({
-      where: { storeId: session.user.storeId },
+      where: {
+        stores: {
+          some: {
+            id: store.id,
+          },
+        },
+      },
     });
     return users;
   } catch (error) {

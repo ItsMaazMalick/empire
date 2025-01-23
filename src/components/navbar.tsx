@@ -14,8 +14,12 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getUserFromSession } from "@/actions/session";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export function Navbar() {
+export async function Navbar() {
+  const user = await getUserFromSession();
   return (
     <div className="h-[60px] bg-card text-card-foreground flex items-center justify-between p-4">
       <h2 className="text-2xl font-bold">{siteTitle}</h2>
@@ -26,7 +30,7 @@ export function Navbar() {
               MM
             </div>
             <div>
-              <p className="text-sm font-medium">Maaz Malick</p>
+              <p className="text-sm font-medium">{user?.name}</p>
               <p className="text-xs text-muted-foreground">Stone Owner</p>
             </div>
           </div>
@@ -36,6 +40,25 @@ export function Navbar() {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>
+              <form
+                action={async () => {
+                  "use server";
+                  const cookieStore = await cookies();
+                  cookieStore.delete("user");
+                  cookieStore.delete("store");
+                  return redirect("/auth/login");
+                }}
+              >
+                <Button
+                  type="submit"
+                  variant={"destructive"}
+                  className="w-full"
+                >
+                  Logout
+                </Button>
+              </form>
+            </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>

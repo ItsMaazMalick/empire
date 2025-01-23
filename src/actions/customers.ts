@@ -1,9 +1,9 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
 import { revalidatePath } from "next/cache";
+import { getStoreFromSession } from "./session";
 
 export async function createCustomer(
   prevState: ActionResponse | null,
@@ -13,8 +13,9 @@ export async function createCustomer(
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
+    const store = await getStoreFromSession();
 
-    if (!name || !phone) {
+    if (!name || !phone || !store) {
       return {
         success: false,
         message: "Please fill all fields",
@@ -26,9 +27,10 @@ export async function createCustomer(
         name,
         email,
         phone,
+        storeId: store.id,
       },
     });
-    revalidatePath(`/${session.user.storeId}/cart`);
+    revalidatePath(`/${store.id}/cart`);
     return {
       success: true,
       message: "Customer added successfully",

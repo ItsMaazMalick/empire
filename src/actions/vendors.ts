@@ -1,9 +1,9 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
 import { revalidatePath } from "next/cache";
+import { getStoreFromSession } from "./session";
 
 export async function createVendor(
   prevState: ActionResponse | null,
@@ -14,8 +14,9 @@ export async function createVendor(
     const address = formData.get("address") as string;
     const website = formData.get("website") as string;
     const phone = formData.get("phone") as string;
+    const store = await getStoreFromSession();
 
-    if (!name || !phone || !address) {
+    if (!name || !phone || !address || !store) {
       return {
         success: false,
         message: "Please fill all fields",
@@ -28,9 +29,10 @@ export async function createVendor(
         address,
         website,
         phone,
+        storeId: store.id,
       },
     });
-    revalidatePath(`/${session.user.storeId}/products`);
+    revalidatePath(`/${store.id}/products`);
     return {
       success: true,
       message: "Vendor added successfully",

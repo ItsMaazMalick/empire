@@ -235,8 +235,10 @@ export async function getFinances() {
       },
       where: {
         user: {
-          store: {
-            name: "Empire", // You might want to make this dynamic
+          stores: {
+            some: {
+              name: "Empire", // You might want to make this dynamic
+            },
           },
         },
       },

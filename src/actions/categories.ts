@@ -1,9 +1,9 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
 import { revalidatePath } from "next/cache";
+import { getStoreFromSession } from "./session";
 
 export async function createCategory(
   prevState: ActionResponse | null,
@@ -11,8 +11,9 @@ export async function createCategory(
 ): Promise<ActionResponse> {
   try {
     const name = formData.get("name") as string;
+    const store = await getStoreFromSession();
 
-    if (!name) {
+    if (!name || !store) {
       return {
         success: false,
         message: "Please fill all fields",
@@ -22,9 +23,10 @@ export async function createCategory(
     await prisma.category.create({
       data: {
         name,
+        storeId: store.id,
       },
     });
-    revalidatePath(`/${session.user.storeId}/products`);
+    revalidatePath(`/${store.id}/products`);
     return {
       success: true,
       message: "Category added successfully",

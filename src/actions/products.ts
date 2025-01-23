@@ -1,10 +1,10 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { Order } from "@/store";
 import { ActionResponse } from "@/types/repair-brand";
 import { revalidatePath } from "next/cache";
+import { getStoreFromSession } from "./session";
 
 export async function createProduct(
   prevState: ActionResponse | null,
@@ -23,8 +23,9 @@ export async function createProduct(
     const status = formData.get("status") as "ACTIVE" | "INACTIVE";
     const condition = formData.get("condition") as string;
     const inStock = Number(formData.get("inStock"));
+    const store = await getStoreFromSession();
 
-    if (!title) {
+    if (!title || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -48,7 +49,7 @@ export async function createProduct(
         vendorId,
       },
     });
-    revalidatePath(`/${session.user.storeId}/products`);
+    revalidatePath(`/${store.id}/products`);
     return {
       success: true,
       message: "Product added successfully",
@@ -80,7 +81,9 @@ export async function updateProduct(
     const condition = formData.get("condition") as string;
     const inStock = Number(formData.get("inStock"));
 
-    if (!productId) {
+    const store = await getStoreFromSession();
+
+    if (!productId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -105,7 +108,7 @@ export async function updateProduct(
         vendorId,
       },
     });
-    revalidatePath(`/${session.user.storeId}/products`);
+    revalidatePath(`/${store.id}/products`);
     return {
       success: true,
       message: "Product updated successfully",

@@ -5,6 +5,7 @@ export interface RepairBrandData {
 export interface ActionResponse {
   success: boolean;
   message: string;
+  id?: string;
   errors?: {
     [K in keyof RepairBrandData]?: string[];
   };

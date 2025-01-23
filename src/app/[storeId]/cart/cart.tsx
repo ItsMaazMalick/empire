@@ -32,7 +32,7 @@ type User = {
   phone: string | null;
   status: string;
   calculateCommition: string | null;
-  storeId: string;
+  // storeId: string;
 };
 
 export default function Cart({ products }: any) {

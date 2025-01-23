@@ -1,9 +1,9 @@
 "use server";
 
-import { session } from "@/constants/data";
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
 import { revalidatePath } from "next/cache";
+import { getStoreFromSession } from "./session";
 
 export async function createRepairBrand(
   prevState: ActionResponse | null,
@@ -11,7 +11,8 @@ export async function createRepairBrand(
 ): Promise<ActionResponse> {
   try {
     const brandName = formData.get("name") as string;
-    if (!brandName) {
+    const store = await getStoreFromSession();
+    if (!brandName || !store) {
       return {
         success: false,
         message: "Brand name is required",
@@ -21,10 +22,10 @@ export async function createRepairBrand(
     await prisma.repairBrand.create({
       data: {
         name: brandName,
-        storeId: session.user.storeId,
+        storeId: store.id,
       },
     });
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "Brand added successfully",
@@ -44,7 +45,8 @@ export async function updateRepairBrand(
   try {
     const brandName = formData.get("name") as string;
     const brandId = formData.get("brandId") as string;
-    if (!brandName || !brandId) {
+    const store = await getStoreFromSession();
+    if (!brandName || !brandId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -55,10 +57,10 @@ export async function updateRepairBrand(
       where: { id: brandId },
       data: {
         name: brandName,
-        storeId: session.user.storeId,
+        storeId: store.id,
       },
     });
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "Brand updated successfully",
@@ -79,7 +81,8 @@ export async function createRepairSeries(
   try {
     const seriesName = formData.get("name") as string;
     const brandId = formData.get("brandId") as string;
-    if (!seriesName || !brandId) {
+    const store = await getStoreFromSession();
+    if (!seriesName || !brandId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -92,7 +95,7 @@ export async function createRepairSeries(
         brandId: brandId,
       },
     });
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "Series added successfully",
@@ -113,7 +116,8 @@ export async function updateRepairSeries(
     const seriesName = formData.get("name") as string;
     const brandId = formData.get("brandId") as string;
     const seriesId = formData.get("seriesId") as string;
-    if (!seriesName || !brandId || !seriesId) {
+    const store = await getStoreFromSession();
+    if (!seriesName || !brandId || !seriesId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -127,7 +131,7 @@ export async function updateRepairSeries(
         brandId: brandId,
       },
     });
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "Series updated successfully",
@@ -147,8 +151,9 @@ export async function createRepairModel(
   try {
     const modelName = formData.get("name") as string;
     const seriesId = formData.get("seriesId") as string;
+    const store = await getStoreFromSession();
 
-    if (!modelName || !seriesId) {
+    if (!modelName || !seriesId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -290,7 +295,7 @@ export async function createRepairModel(
     });
 
     // If the transaction completes successfully
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "Model added successfully",
@@ -311,7 +316,8 @@ export async function updateRepairModel(
   try {
     const name = formData.get("name") as string;
     const modelId = formData.get("modelId") as string;
-    if (!name || !modelId) {
+    const store = await getStoreFromSession();
+    if (!name || !modelId || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -324,7 +330,7 @@ export async function updateRepairModel(
         name,
       },
     });
-    revalidatePath(`/${session.user.storeId}/edit-repair`);
+    revalidatePath(`/${store.id}/edit-repair`);
     return {
       success: true,
       message: "model updated successfully",
@@ -339,9 +345,13 @@ export async function updateRepairModel(
 
 export async function getAllRepairBrandswithSeriesModal() {
   try {
+    const store = await getStoreFromSession();
+    if (!store) {
+      return null;
+    }
     const brands = await prisma.repairBrand.findMany({
       where: {
-        storeId: session.user.storeId,
+        storeId: store.id,
       },
       include: {
         repairSeries: {
@@ -390,8 +400,9 @@ export async function updateRepairPrice(
     const cost = Number(formData.get("cost"));
     const price = Number(formData.get("price"));
     const name = formData.get("name") as string;
+    const store = await getStoreFromSession();
 
-    if (!modelId || !name) {
+    if (!modelId || !name || !store) {
       return {
         success: false,
         message: "All fields are required",
@@ -407,9 +418,7 @@ export async function updateRepairPrice(
         stock: stock,
       },
     });
-    revalidatePath(
-      `/${session.user.storeId}/create-repair/${modelId}/edit-prices`
-    );
+    revalidatePath(`/${store.id}/create-repair/${modelId}/edit-prices`);
     return {
       success: true,
       message: "Price updated successfully",
