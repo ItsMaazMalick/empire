@@ -37,7 +37,7 @@ export async function getStoreFromSession() {
       storeToken,
       process.env.JWT_SECRET!
     ) as JwtPayload;
-    const store = { id: decryptToken.id };
+    const store = { id: decryptToken.id, name: decryptToken.name };
     return store;
   } catch (error) {
     return null;

@@ -11,6 +11,8 @@ import {
 import { StoreLogin } from "./store-login";
 import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { Button } from "@/components/ui/button";
 
 export default async function CreateStorePage({
   params,
@@ -31,7 +33,7 @@ export default async function CreateStorePage({
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-center">
-              Create Your Store Account
+              Available Stores
             </CardTitle>
             <CardDescription className="text-center">
               Fill in your details to get started
@@ -47,10 +49,24 @@ export default async function CreateStorePage({
                 </StoreLogin>
               </div>
             ))}
+            <form
+              className=""
+              action={async () => {
+                "use server";
+                const cookieStore = await cookies();
+                cookieStore.delete("user");
+                cookieStore.delete("store");
+                return redirect("/auth/login");
+              }}
+            >
+              <Button type="submit" variant={"destructive"} className="w-fit">
+                Logout
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
-      <CreateStoreForm userId={id} />
+      {user.role === "MANAGER" && <CreateStoreForm userId={id} />}
     </div>
   );
 }

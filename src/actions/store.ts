@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { ActionResponse } from "@/types/repair-brand";
+import { revalidatePath } from "next/cache";
 
 export async function createStore(
   prevState: ActionResponse | null,
@@ -44,6 +45,8 @@ export async function createStore(
     //     },
     //   },
     // });
+
+    revalidatePath(`/auth/${userId}/store`);
 
     return {
       success: true,

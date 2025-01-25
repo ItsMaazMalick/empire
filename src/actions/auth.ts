@@ -125,6 +125,7 @@ export async function loginStore(
 
     const tokenData = {
       id: existingStore.id,
+      name: existingStore.name,
     };
 
     const token = jwt.sign(tokenData, process.env.JWT_SECRET!, {

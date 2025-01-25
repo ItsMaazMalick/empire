@@ -14,24 +14,25 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getUserFromSession } from "@/actions/session";
+import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function Navbar() {
   const user = await getUserFromSession();
+  const store = await getStoreFromSession();
   return (
     <div className="h-[60px] bg-card text-card-foreground flex items-center justify-between p-4">
-      <h2 className="text-2xl font-bold">{siteTitle}</h2>
+      <h2 className="text-2xl font-bold">{store?.name}</h2>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex items-center gap-2 hover:bg-primary/80 transition-all duration-300 py-1 px-2 cursor-pointer rounded-md">
             <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-sm">
-              MM
+              {user?.name.charAt(0)}
             </div>
             <div>
               <p className="text-sm font-medium">{user?.name}</p>
-              <p className="text-xs text-muted-foreground">Stone Owner</p>
+              <p className="text-xs text-muted-foreground">{user?.role}</p>
             </div>
           </div>
         </DropdownMenuTrigger>
