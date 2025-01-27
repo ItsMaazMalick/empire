@@ -350,13 +350,14 @@ export async function getAllRepairBrandswithSeriesModal() {
       return null;
     }
     const brands = await prisma.repairBrand.findMany({
-      where: {
-        storeId: store.id,
-      },
       include: {
         repairSeries: {
           include: {
-            models: true,
+            models: {
+              orderBy: {
+                updatedAt: "desc",
+              },
+            },
           },
         },
       },

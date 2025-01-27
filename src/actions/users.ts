@@ -6,6 +6,7 @@ import { Role, Status } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { getStoreFromSession } from "./session";
+import { validateRequiredField } from "@/lib/required-field";
 
 export async function createUser(
   prevState: ActionResponse | null,
@@ -30,6 +31,25 @@ export async function createUser(
       ),
       repairsPercentage: Number(formData.get("repairsPercentage")),
     };
+
+    const requiredFields = [
+      { name: "name", value: userData.name },
+      { name: "email", value: userData.email },
+      // { name: "phone", value: userData.phone },
+      { name: "password", value: userData.password },
+      // { name: "status", value: userData.status },
+      // { name: "role", value: userData.role },
+    ];
+
+    for (const { name, value } of requiredFields) {
+      if (!validateRequiredField(name, value)) {
+        return {
+          success: false,
+          message: "Missing some required fields",
+        };
+      }
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: {
         email: userData.email,
@@ -56,7 +76,7 @@ export async function createUser(
         phone: userData.phone,
 
         password: hashedPassword,
-        status: userData.status ?? "ACTIVE",
+        status: userData.status ?? "INACTIVE",
         role: userData.role ?? "MANAGER",
         calculateCommition:
           userData.calculateCommition === "sales" ? "sales" : "profit",

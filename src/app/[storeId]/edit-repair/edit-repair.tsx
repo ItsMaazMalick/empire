@@ -12,6 +12,7 @@ import {
   deleteRepairModel,
   deleteRepairSeries,
 } from "@/actions/repair";
+import { createTestModels } from "@/actions/test";
 
 interface EditRepairProps {
   brands: Brand[];
@@ -62,6 +63,7 @@ export function EditRepair({ brands }: EditRepairProps) {
 
   return (
     <div className="min-h-screen p-4">
+      {/* <button onClick={createTestModels}>Click Me</button> */}
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-semibold">Menu Items</h1>

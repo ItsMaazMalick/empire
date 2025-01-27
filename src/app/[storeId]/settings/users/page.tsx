@@ -12,13 +12,19 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { CreateUserModal } from "./create-user-modal";
+import { getUserFromSession } from "@/actions/session";
+import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
   const users = await getUsers();
+  const us = await getUserFromSession();
+  if (!us) {
+    return redirect("/auth/login");
+  }
 
   return (
     <div className="p-4 lg:p-10 h-[calc(100vh-150px)] overflow-y-auto">
-      <CreateUserModal />
+      {us.role === "MANAGER" && <CreateUserModal />}
       <Table>
         <TableHeader>
           <TableRow>
@@ -26,7 +32,9 @@ export default async function UsersPage() {
             <TableHead>Email</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Role</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {us.role === "MANAGER" && (
+              <TableHead className="text-right">Actions</TableHead>
+            )}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -36,9 +44,11 @@ export default async function UsersPage() {
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.status}</TableCell>
               <TableCell>{user.role}</TableCell>
-              <TableCell className="text-right">
-                <CreateUserModal user={user} />
-              </TableCell>
+              {us.role === "MANAGER" && (
+                <TableCell className="text-right">
+                  <CreateUserModal user={user} />
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

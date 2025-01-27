@@ -40,6 +40,13 @@ export async function loginUser(
       };
     }
 
+    if (existingUser.status !== "ACTIVE") {
+      return {
+        success: false,
+        message: "You are not allowed to login",
+      };
+    }
+
     const tokenData = {
       id: existingUser.id,
       name: existingUser.name,

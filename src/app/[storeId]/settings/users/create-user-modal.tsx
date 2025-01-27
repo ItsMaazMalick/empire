@@ -18,6 +18,13 @@ import { useToast } from "@/hooks/use-toast";
 import { createRepairBrand } from "@/actions/repair";
 import { createUser, updateUser } from "@/actions/users";
 import { User } from "@prisma/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const initialState = {
   success: false,
@@ -73,7 +80,7 @@ export function CreateUserModal({ user }: { user?: User }) {
             </div>
             <div className="">
               <Label htmlFor="email" className="text-right">
-                Email (Optional)
+                Email
               </Label>
               <Input
                 id="email"
@@ -81,6 +88,26 @@ export function CreateUserModal({ user }: { user?: User }) {
                 className="col-span-3"
                 defaultValue={user?.email || ""}
               />
+            </div>
+            <div className="">
+              <Label htmlFor="role" className="text-right">
+                Role
+              </Label>
+              <Select name="role" required defaultValue={user?.role}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MANAGER">MANAGER</SelectItem>
+                  <SelectItem value="TECHNICIAN">TECHNICIAN</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="">
+              <Label htmlFor="password" className="text-right">
+                Password
+              </Label>
+              <Input id="password" name="password" className="col-span-3" />
             </div>
             <div className="">
               <Label htmlFor="phone" className="text-right">
