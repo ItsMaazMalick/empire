@@ -3,10 +3,12 @@
 import { prisma } from "@/lib/prisma";
 import { Order } from "@/store";
 import { ActionResponse } from "@/types/repair-brand";
+import { OrderStatus, Status } from "@prisma/client";
 
 import { revalidatePath } from "next/cache";
 
 export async function createOrder(order: Order | null) {
+  console.log(order);
   try {
     if (!order) {
       return {
@@ -41,19 +43,36 @@ export async function createOrder(order: Order | null) {
     );
 
     if (filteredOrderServices.length > 0) {
+      console.log("Hello 1");
       try {
         const orderServices = await prisma.orderItem.createMany({
-          data: filteredOrderServices.map((service) => ({
-            imei: service.imei || "",
-            orderId: newOrder.id,
-            orderServiceId: service.serviceId,
-            dueDate: new Date(service.dueDate || "").toISOString(),
-            password: service.password || "",
-            quantity: service.quantity,
-            repairStatus: service.status,
-          })),
+          data: filteredOrderServices.map((service) => {
+            if (!service.dueDate) {
+              return {
+                imei: service.imei || "",
+                orderId: newOrder.id,
+                orderServiceId: service.serviceId,
+
+                password: service.password || "",
+                quantity: service.quantity,
+                repairStatus: service.status,
+              };
+            } else {
+              return {
+                imei: service.imei || "",
+                orderId: newOrder.id,
+                orderServiceId: service.serviceId,
+                dueDate: new Date(service.dueDate).toISOString(),
+                password: service.password || "",
+                quantity: service.quantity,
+                repairStatus: service.status,
+              };
+            }
+          }),
         });
       } catch (error) {
+        console.log("Hello 2");
+        console.log(error);
         await prisma.order.delete({ where: { id: newOrder.id } });
       }
     }
@@ -67,7 +86,10 @@ export async function createOrder(order: Order | null) {
             orderProductId: product.serviceId,
           })),
         });
+        console.log("Hello 3");
       } catch (error) {
+        console.log("Hello 4");
+        console.log(error);
         await prisma.order.delete({ where: { id: newOrder.id } });
       }
     }
@@ -77,6 +99,7 @@ export async function createOrder(order: Order | null) {
       message: "Order created successfully",
     };
   } catch (error) {
+    console.log(error);
     return {
       success: false,
       message: "Failed to create order. Please try again.",
@@ -382,5 +405,31 @@ export async function getTotalOrdersToday() {
   } catch (error) {
     console.error(error);
     return null;
+  }
+}
+
+export async function updateOrderPaymentStatus(
+  prevState: ActionResponse | null,
+  formData: FormData
+): Promise<ActionResponse> {
+  try {
+    const id = formData.get("id") as string;
+    const status = formData.get("status") as OrderStatus;
+    const item = await prisma.order.update({
+      where: { id },
+      data: {
+        orderStatus: status,
+      },
+    });
+    revalidatePath(`/123/orders/${id}`);
+    return {
+      success: true,
+      message: "Status has been updated",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Something went wrong",
+    };
   }
 }

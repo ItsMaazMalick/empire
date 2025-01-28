@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Fragment } from "react";
 import { UpdateServiceModal } from "./update-service-modal";
+import { UpdatePaymentModal } from "./update-payment-modal";
 
 type Props = {
   order: any;
@@ -50,6 +51,7 @@ export function OrderDetails({ order }: Props) {
                   </TooltipProvider>
                 </TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Payment Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -78,6 +80,9 @@ export function OrderDetails({ order }: Props) {
                       >
                         <Printer className="w-4 h-4" />
                       </Button>
+                    </TableCell>
+                    <TableCell>
+                      <UpdatePaymentModal item={order} />
                     </TableCell>
                   </TableRow>
                   <TableRow className="border-gray-700">
