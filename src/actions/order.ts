@@ -70,6 +70,16 @@ export async function createOrder(order: Order | null) {
             }
           }),
         });
+
+        // Decrement the quantity for each repair service
+        await Promise.all(
+          filteredOrderServices.map((service) =>
+            prisma.repairService.update({
+              where: { id: service.serviceId },
+              data: { stock: { decrement: service.quantity } },
+            })
+          )
+        );
       } catch (error) {
         console.log("Hello 2");
         console.log(error);

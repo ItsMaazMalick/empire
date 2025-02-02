@@ -64,6 +64,19 @@ export function AllServices({ services }: any) {
     );
   };
 
+  const handlePriceChange = (serviceId: string, price: number) => {
+    setSelectedServices((prev) =>
+      prev.map((service) =>
+        service.repairService.id === serviceId
+          ? {
+              ...service,
+              repairService: { ...service.repairService, price },
+            }
+          : service
+      )
+    );
+  };
+
   const handleRemoveService = (serviceId: string) => {
     setSelectedServices((prev) =>
       prev.filter((service) => service.repairService.id !== serviceId)
@@ -152,12 +165,24 @@ export function AllServices({ services }: any) {
                 max={service.repairService.stock}
                 className="w-20"
               />
-              <p>
-                $
-                {(
+              <Input
+                type="number"
+                placeholder="Price"
+                defaultValue={(
                   service.repairService.price * service.repairService.quantity
                 ).toFixed(2)}
-              </p>
+                // value={(
+                //   service.repairService.price * service.repairService.quantity
+                // ).toFixed(2)}
+                onChange={(e) =>
+                  handlePriceChange(
+                    service.repairService.id,
+                    parseInt(e.target.value) || 1
+                  )
+                }
+                className="w-20"
+              />
+
               <Button
                 variant="ghost"
                 size="icon"

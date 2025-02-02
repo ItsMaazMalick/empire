@@ -24,7 +24,7 @@ export default async function UsersPage() {
 
   return (
     <div className="p-4 lg:p-10 h-[calc(100vh-150px)] overflow-y-auto">
-      {us.role === "MANAGER" && <CreateUserModal />}
+      {us.role === "MANAGER" && <CreateUserModal role={us.role} />}
       <Table>
         <TableHeader>
           <TableRow>
@@ -46,7 +46,7 @@ export default async function UsersPage() {
               <TableCell>{user.role}</TableCell>
               {us.role === "MANAGER" && (
                 <TableCell className="text-right">
-                  <CreateUserModal user={user} />
+                  <CreateUserModal user={user} role={us.role} />
                 </TableCell>
               )}
             </TableRow>

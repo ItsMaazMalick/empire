@@ -31,7 +31,13 @@ const initialState = {
   message: "",
 };
 
-export function CreateUserModal({ user }: { user?: User }) {
+export function CreateUserModal({
+  role,
+  user,
+}: {
+  role: "MANAGER" | "TECHNICIAN";
+  user?: User;
+}) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [state, action, isPending] = useActionState(
@@ -103,6 +109,22 @@ export function CreateUserModal({ user }: { user?: User }) {
                 </SelectContent>
               </Select>
             </div>
+            {role === "MANAGER" && (
+              <div className="">
+                <Label htmlFor="status" className="text-right">
+                  Status
+                </Label>
+                <Select name="status" required defaultValue={user?.status}>
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                    <SelectItem value="INACTIVE">INACTIVE</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             <div className="">
               <Label htmlFor="password" className="text-right">
                 Password

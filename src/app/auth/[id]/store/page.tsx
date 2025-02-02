@@ -13,6 +13,7 @@ import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Button } from "@/components/ui/button";
+import { getUsers } from "@/actions/users";
 
 export default async function CreateStorePage({
   params,

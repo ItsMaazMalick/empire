@@ -101,7 +101,7 @@ export async function createUser(
       });
     }
 
-    // revalidatePath(`/${store.id}/settings/users`);
+    revalidatePath(`/${store?.id}/settings/users`);
     return {
       success: true,
       message: "user added successfully",
@@ -124,6 +124,8 @@ export async function updateUser(
       name: formData.get("name") as string,
       email: formData.get("email") as string,
       phone: formData.get("phone") as string,
+      status: formData.get("status") as Status,
+      role: formData.get("role") as Role,
       calculateCommition: formData.get("calculateCommition") as string,
       refundCommition: formData.get("refundCommition") as string,
       accessoriesPercentage: Number(formData.get("accessoriesPercentage")),
@@ -155,8 +157,8 @@ export async function updateUser(
         email: userData.email,
         phone: userData.phone,
 
-        status: "ACTIVE",
-        role: "MANAGER",
+        status: userData.status,
+        role: userData.role,
         calculateCommition:
           userData.calculateCommition === "sales" ? "sales" : "profit",
         refundCommition: userData.refundCommition === "yes" ? true : false,
