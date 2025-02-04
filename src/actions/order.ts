@@ -136,6 +136,7 @@ export async function getAllOrders() {
 }
 
 export async function getOrderById(id: string) {
+  console.log(id);
   try {
     const order = await prisma.order.findUnique({
       where: { id },

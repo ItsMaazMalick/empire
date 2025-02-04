@@ -10,7 +10,7 @@ export default async function DashboardLayout({
 }) {
   const user = await getUserFromSession();
   const store = await getStoreFromSession();
-  if (!user && !store) {
+  if (!user || !store) {
     return redirect(`/auth/login`);
   }
 

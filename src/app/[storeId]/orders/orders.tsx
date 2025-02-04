@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { OrdersTable } from "./orders-table";
+import { useRouter } from "next/navigation";
 
 const tabs = [
   { value: "PENDING_PAYMENT", label: "Pending payment" },
@@ -16,18 +17,19 @@ const tabs = [
   { value: "all", label: "All Orders" }, // "all" can be a special case
 ];
 
-export function Orders({ orders }: any) {
+export function Orders({ orders, store }: any) {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-[#0B1121] text-white p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <Link href="/" className="hover:text-gray-300">
+          <div onClick={() => router.back()} className="hover:text-gray-300">
             <ArrowLeft className="w-6 h-6" />
-          </Link>
+          </div>
           <h1 className="text-2xl font-semibold">Orders</h1>
         </div>
         <div className="flex gap-3">
@@ -46,7 +48,7 @@ export function Orders({ orders }: any) {
 
       {/* Search and Filters */}
       <div className="mb-6">
-        <div className="relative mb-4">
+        {/* <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
           <Input
             placeholder="Search orders id"
@@ -55,7 +57,7 @@ export function Orders({ orders }: any) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-        </div>
+        </div> */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="bg-[#1A2337] p-1">
             {tabs.map((tab) => (
@@ -76,6 +78,7 @@ export function Orders({ orders }: any) {
         orders={orders}
         activeTab={activeTab}
         searchQuery={searchQuery}
+        store={store}
       />
     </div>
   );

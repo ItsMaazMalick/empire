@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Sample data - replace with your actual data source
 
@@ -27,14 +28,17 @@ interface OrdersTableProps {
   orders: any;
   activeTab: string;
   searchQuery: string;
+  store: { id: string };
 }
 
 export function OrdersTable({
   orders,
   activeTab,
   searchQuery,
+  store,
 }: OrdersTableProps) {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
+  const router = useRouter();
 
   // Filter orders based on active tab and search query
   const filteredOrders = orders.filter((order: any) => {
@@ -76,9 +80,9 @@ export function OrdersTable({
               />
             </TableHead>
             <TableHead>No.</TableHead>
-            <TableHead>Order</TableHead>
-            <TableHead>Date</TableHead>
             <TableHead>Customer</TableHead>
+            <TableHead>Date</TableHead>
+            {/* <TableHead>Order</TableHead> */}
             <TableHead>Phone Number</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Payment Status</TableHead>
@@ -90,7 +94,8 @@ export function OrdersTable({
           {filteredOrders?.map((order: any, index: number) => (
             <TableRow
               key={order.id}
-              className="border-gray-700 hover:bg-[#1A2337]"
+              className="border-gray-700 hover:bg-[#1A2337] cursor-pointer"
+              onClick={() => router.push(`/${store.id}/orders/${order.id}`)}
             >
               <TableCell>
                 <Checkbox
@@ -99,11 +104,11 @@ export function OrdersTable({
                 />
               </TableCell>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>
-                <Link href={`/123/orders/${order.id}`}>{order.id}</Link>
-              </TableCell>
-              <TableCell>{order.createdAt.toLocaleString()}</TableCell>
               <TableCell>{order.customer?.name}</TableCell>
+              <TableCell>{order.createdAt.toLocaleString()}</TableCell>
+              {/* <TableCell>
+                <Link href={`/123/orders/${order.id}`}>{order.id}</Link>
+              </TableCell> */}
               <TableCell>{order.customer?.phone}</TableCell>
               <TableCell>{order.price}</TableCell>
               <TableCell>

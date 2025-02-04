@@ -4,6 +4,7 @@ import {
   getTotalSalesToday,
   getTotalWaitingToday,
 } from "@/actions/order";
+import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { Button } from "@/components/ui/button";
 import {
   Calculator,
@@ -17,6 +18,7 @@ import {
   Wrench,
 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage({
   params,
@@ -28,17 +30,22 @@ export default async function DashboardPage({
   const sales = await getTotalSalesToday();
   const waiting = await getTotalWaitingToday();
   const repairs = await getTotalRepairsToday();
+  const user = await getUserFromSession();
+  const store = await getStoreFromSession();
+  if (!user || !store) {
+    return redirect("/auth/login");
+  }
   return (
     <div className="p-4 lg:px-32 grid grid-cols-3 gap-4">
       <Link
-        href={`/123/cart`}
+        href={`/${storeId}/cart`}
         className="p-6 rounded-xl bg-secondary text-white flex flex-col gap-4"
       >
         <CalendarArrowDown className="size-16" />
         <p className="text-xl font-bold">Create Order</p>
       </Link>
       <Link
-        href={`/123/create-repair`}
+        href={`/${storeId}/create-repair`}
         className="p-6 rounded-xl bg-secondary text-white flex flex-col gap-4"
       >
         <Wrench className="size-16" />
@@ -49,48 +56,50 @@ export default async function DashboardPage({
         <p className="text-xl font-bold">Team Task</p>
       </div>
       <Link
-        href={`/123/edit-repair`}
+        href={`/${storeId}/edit-repair`}
         className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
       >
         <Wrench className="size-16" />
         <p className="text-xl font-bold">Manage Devices</p>
       </Link>
       <Link
-        href={`/123/products`}
+        href={`/${storeId}/products`}
         className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
       >
         <ScanBarcode className="size-16" />
         <p className="text-xl font-bold">Electronic Devices</p>
       </Link>
       <Link
-        href={`/123/products`}
+        href={`/${storeId}/products`}
         className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
       >
         <Usb className="size-16" />
         <p className="text-xl font-bold">Accessories</p>
       </Link>
-      <div className="p-6 rounded-xl bg-card text-white flex flex-col gap-4">
-        <Calculator />
-        <p>Here&apos;s what&apos;s happening with your store today</p>
-        <div>
-          <p className="font-bold text-primary">Total Sales</p>
-          <p className="font-semibold">${sales}</p>
+      {user?.role === "MANAGER" && (
+        <div className="p-6 rounded-xl bg-card text-white flex flex-col gap-4">
+          <Calculator />
+          <p>Here&apos;s what&apos;s happening with your store today</p>
+          <div>
+            <p className="font-bold text-primary">Total Sales</p>
+            <p className="font-semibold">${sales}</p>
+          </div>
+          <div className="grid grid-cols-3">
+            <div className="p-2 ring-1 ring-secondary-foreground text-center">
+              <p>Orders</p>
+              <p>{orders}</p>
+            </div>
+            <div className="p-2 ring-1 ring-secondary-foreground text-center">
+              <p>Repairs</p>
+              <p>{repairs}</p>
+            </div>
+            <div className="p-2 ring-1 ring-secondary-foreground text-center text-xs">
+              <p>Waiting to be fixed</p>
+              <p>{waiting}</p>
+            </div>
+          </div>
         </div>
-        <div className="grid grid-cols-3">
-          <div className="p-2 ring-1 ring-secondary-foreground text-center">
-            <p>Orders</p>
-            <p>{orders}</p>
-          </div>
-          <div className="p-2 ring-1 ring-secondary-foreground text-center">
-            <p>Repairs</p>
-            <p>{repairs}</p>
-          </div>
-          <div className="p-2 ring-1 ring-secondary-foreground text-center text-xs">
-            <p>Waiting to be fixed</p>
-            <p>{waiting}</p>
-          </div>
-        </div>
-      </div>
+      )}
       <div className="space-y-4">
         <Button className="w-full" asChild>
           <Link href="/123/cart">

@@ -12,12 +12,13 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { CreateUserModal } from "./create-user-modal";
-import { getUserFromSession } from "@/actions/session";
+import { getStoreFromSession, getUserFromSession } from "@/actions/session";
 import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
   const users = await getUsers();
   const us = await getUserFromSession();
+
   if (!us) {
     return redirect("/auth/login");
   }
