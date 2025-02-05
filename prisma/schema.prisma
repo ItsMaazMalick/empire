@@ -64,6 +64,9 @@ model Product {
   title         String
   description   String
   tags          String
+  imei          String
+  storage       String
+  batteryHealth String
   image         String
   price         Float
   minimumPrice  Float

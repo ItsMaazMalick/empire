@@ -112,6 +112,39 @@ export function AddProductModal({
                 className="col-span-3"
               />
             </div>
+            <div>
+              <Label htmlFor="imei" className="text-right">
+                IMEI / Serial
+              </Label>
+              <Input
+                defaultValue={product?.imei}
+                id="imei"
+                name="imei"
+                className="col-span-3"
+              />
+            </div>
+            <div>
+              <Label htmlFor="storage" className="text-right">
+                Storage
+              </Label>
+              <Input
+                defaultValue={product?.storage}
+                id="storage"
+                name="storage"
+                className="col-span-3"
+              />
+            </div>
+            <div>
+              <Label htmlFor="batteryHealth" className="text-right">
+                Battery Health
+              </Label>
+              <Input
+                defaultValue={product?.batteryHealth}
+                id="batteryHealth"
+                name="batteryHealth"
+                className="col-span-3"
+              />
+            </div>
 
             <div>
               <Label htmlFor="vendorId">Select Vendor</Label>

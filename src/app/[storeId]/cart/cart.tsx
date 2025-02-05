@@ -117,11 +117,9 @@ export default function Cart({ products }: any) {
     const res = await createOrder(order);
     if (res?.success) {
       clearOrder();
-      router.push("/123/dashboard");
-      console.log(res);
+      router.push("/");
     } else {
       setLoading(false);
-      console.log(res);
     }
   };
 
@@ -165,7 +163,17 @@ export default function Cart({ products }: any) {
                       }
                     />
                   </p>
-                  <p className="w-[20%] text-center">${item.price || "0.0"}</p>
+                  <p className="w-[20%] text-center">
+                    <Input
+                      placeholder="Quantity"
+                      value={item.price || ""}
+                      onChange={(e) =>
+                        updateService(item.serviceId, {
+                          price: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </p>
                   <p
                     className="hover:bg-white transition-all duration-300 p-2 rounded-md"
                     onClick={() => removeService(item.serviceId)}

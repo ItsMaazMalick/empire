@@ -16,6 +16,9 @@ export async function createProduct(
     const vendorId = formData.get("vendorId") as string;
     const description = formData.get("description") as string;
     const tags = formData.get("tags") as string;
+    const imei = formData.get("imei") as string;
+    const storage = formData.get("storage") as string;
+    const batteryHealth = formData.get("batteryHealth") as string;
     const image = formData.get("image") as string;
     const price = Number(formData.get("price"));
     const minimumPrice = Number(formData.get("minimumPrice"));
@@ -38,6 +41,9 @@ export async function createProduct(
 
         description,
         tags,
+        imei,
+        storage,
+        batteryHealth,
         image,
         price,
         minimumPrice,
@@ -73,6 +79,9 @@ export async function updateProduct(
     const vendorId = formData.get("vendorId") as string;
     const description = formData.get("description") as string;
     const tags = formData.get("tags") as string;
+    const imei = formData.get("imei") as string;
+    const storage = formData.get("storage") as string;
+    const batteryHealth = formData.get("batteryHealth") as string;
     const image = formData.get("image") as string;
     const price = Number(formData.get("price"));
     const minimumPrice = Number(formData.get("minimumPrice"));
@@ -97,6 +106,9 @@ export async function updateProduct(
 
         description,
         tags,
+        imei,
+        storage,
+        batteryHealth,
         image,
         price,
         minimumPrice,

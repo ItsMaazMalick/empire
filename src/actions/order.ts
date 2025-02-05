@@ -104,6 +104,15 @@ export async function createOrder(order: Order | null) {
       }
     }
 
+    await Promise.all(
+      filteredOrderProducts.map((product) =>
+        prisma.product.update({
+          where: { id: product.serviceId },
+          data: { inStock: { decrement: product.quantity } },
+        })
+      )
+    );
+
     return {
       success: true,
       message: "Order created successfully",

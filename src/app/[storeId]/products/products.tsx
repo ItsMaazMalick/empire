@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductsTable } from "./products-table";
 import { AddProductModal } from "./add-product-modal";
+import { AddVendorModal } from "./add-vendor-modal";
+import { AddCategoryModal } from "./add-category-modal";
 
 const tabs = [
   { value: "all", label: "All Orders" }, // "all" can be a special case
@@ -35,6 +37,8 @@ export function Products({ products, vendors, categories }: any) {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button> */}
+          <AddVendorModal />
+          <AddCategoryModal />
           <AddProductModal vendors={vendors} categories={categories}>
             <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="w-4 h-4 mr-2" />
