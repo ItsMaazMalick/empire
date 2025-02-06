@@ -13,6 +13,7 @@ export default async function page() {
   const safeVendors = vendors ?? [];
   const categories = await getAllCategories();
   const safeCategories = categories ?? [];
+
   return (
     <Suspense fallback={<Loader2 className="animate-spin" />}>
       <Products

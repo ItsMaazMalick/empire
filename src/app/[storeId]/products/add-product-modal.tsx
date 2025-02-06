@@ -69,8 +69,8 @@ export function AddProductModal({
       const formData = new FormData(e.target as HTMLFormElement);
       if (image) {
         formData.append("image", image);
-      } else if (product) {
-        formData.append("image", product.image);
+      } else if (product?.image) {
+        formData.append("image", product?.image);
       }
 
       // Use startTransition to dispatch the async action within a concurrent context
@@ -320,10 +320,7 @@ export function AddProductModal({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={(!image && !product?.image) || isPending}
-            >
+            <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>

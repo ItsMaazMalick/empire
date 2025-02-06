@@ -67,7 +67,7 @@ model Product {
   imei          String
   storage       String
   batteryHealth String
-  image         String
+  image         String?
   price         Float
   minimumPrice  Float
   cost          Float
@@ -76,7 +76,7 @@ model Product {
   inStock       Int
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  vendor        Vendor         @relation(fields: [vendorId], references: [id])
+  vendor        Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   vendorId      String         @db.ObjectId
   category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String         @db.ObjectId

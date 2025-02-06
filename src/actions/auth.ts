@@ -77,7 +77,6 @@ export async function loginUser(
       id: existingUser.id,
     };
   } catch (error) {
-    console.error("Login error:", error);
     return {
       success: false,
       message: "An error occurred during login. Please try again.",

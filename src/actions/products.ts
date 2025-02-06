@@ -28,7 +28,7 @@ export async function createProduct(
     const inStock = Number(formData.get("inStock"));
     const store = await getStoreFromSession();
 
-    if (!title || !store) {
+    if (!title || !store || !categoryId || !vendorId) {
       return {
         success: false,
         message: "All fields are required",
@@ -143,6 +143,7 @@ export async function getAllProducts() {
     });
     return products;
   } catch (error) {
+    // console.log(error);
     return null;
   }
 }
