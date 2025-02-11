@@ -23,7 +23,7 @@ export function Products({ products, vendors, categories }: any) {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <div className="min-h-screen bg-[#0B1121] text-white p-6">
+    <div className="min-h-screen  p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -55,13 +55,13 @@ export function Products({ products, vendors, categories }: any) {
           <Input
             placeholder="Search products name"
             // placeholder="Search orders by IMEI, Order No, Customer, etc"
-            className="pl-10 bg-[#1A2337] border-gray-700 text-white placeholder:text-gray-500"
+            className="pl-10  border-gray-700 text-white placeholder:text-gray-500"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-[#1A2337] p-1">
+          <TabsList className=" p-1">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}

@@ -43,6 +43,7 @@ export async function Navbar() {
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem>
               <form
+                className="w-full"
                 action={async () => {
                   "use server";
                   const cookieStore = await cookies();

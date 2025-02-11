@@ -72,7 +72,7 @@ export function OrdersTable({
     <div className="rounded-md border border-gray-700">
       <Table>
         <TableHeader>
-          <TableRow className="border-gray-700 hover:bg-[#1A2337]">
+          <TableRow className="border-gray-700 ">
             <TableHead className="w-12">
               <Checkbox
                 checked={selectedOrders.length === filteredOrders.length}
@@ -94,7 +94,7 @@ export function OrdersTable({
           {filteredOrders?.map((order: any, index: number) => (
             <TableRow
               key={order.id}
-              className="border-gray-700 hover:bg-[#1A2337] cursor-pointer"
+              className="border-gray-700  cursor-pointer"
               onClick={() => router.push(`/${store.id}/orders/${order.id}`)}
             >
               <TableCell>

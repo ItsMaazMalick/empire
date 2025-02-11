@@ -29,7 +29,7 @@ export default function DateRangePicker({
             id="date"
             variant="outline"
             className={cn(
-              "w-full justify-start text-left font-normal bg-[#1A2337] border-gray-700",
+              "w-full justify-start text-left font-normal  border-gray-700",
               !date && "text-muted-foreground"
             )}
           >

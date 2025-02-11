@@ -93,7 +93,7 @@ export async function Footer() {
             <Link
               key={link.id}
               href={`/${store.id}${link.href}`}
-              className="flex items-center gap-1 p-2 rounded-lg bg-primary/10 transition-all duration-300"
+              className="flex items-center gap-1 p-2 rounded-lg bg-primary transition-all duration-300"
             >
               <link.icon className="size-4" />
               <span>{link.name}</span>

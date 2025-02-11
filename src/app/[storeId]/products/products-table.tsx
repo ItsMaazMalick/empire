@@ -84,7 +84,7 @@ export function ProductsTable({
     <div className="rounded-md border border-gray-700">
       <Table>
         <TableHeader>
-          <TableRow className="border-gray-700 hover:bg-[#1A2337]">
+          <TableRow className="border-gray-700 ">
             <TableHead className="w-12">
               <Checkbox
                 checked={selectedOrders.length === filteredOrders.length}
@@ -104,10 +104,7 @@ export function ProductsTable({
         </TableHeader>
         <TableBody>
           {filteredOrders?.map((order: any, index: number) => (
-            <TableRow
-              key={order.id}
-              className="border-gray-700 hover:bg-[#1A2337]"
-            >
+            <TableRow key={order.id} className="border-gray-700 ">
               <TableCell>
                 <Checkbox
                   checked={selectedOrders.includes(order.id)}

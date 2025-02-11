@@ -20,10 +20,10 @@ interface Metrics {
 }
 
 const MetricCard = ({ title, value, description }: MetricCardProps) => (
-  <div className="bg-[#0F1629] rounded-lg p-6">
-    <h3 className="text-gray-400 mb-2">{title}</h3>
+  <div className="bg-primary text-primary-foreground rounded-lg p-6">
+    <h3 className=" mb-2">{title}</h3>
     <div className="text-3xl font-bold text-white mb-2">{value}</div>
-    {description && <p className="text-sm text-gray-400">{description}</p>}
+    {description && <p className="text-sm">{description}</p>}
   </div>
 );
 
@@ -37,9 +37,7 @@ type Props = {
 
 export function FinanceMetrics({ metrics }: Props) {
   if (!metrics.success) {
-    return (
-      <div className="text-white">Failed to load metrics: {metrics.error}</div>
-    );
+    return <div>Failed to load metrics: {metrics.error}</div>;
   }
 
   const data = metrics.data!;
@@ -66,15 +64,15 @@ export function FinanceMetrics({ metrics }: Props) {
 
       {/* Finances Breakdown */}
       <div>
-        <h2 className="text-white text-xl mb-4">Finances breakdown</h2>
+        <h2 className="text-secondary text-xl mb-4">Finances breakdown</h2>
         <div className="grid lg:grid-cols-2 gap-4">
           {/* Earnings by Payment Provider */}
-          <div className="bg-[#0F1629] rounded-lg p-6">
+          <div className="bg-primary rounded-lg p-6">
             <div className="flex justify-between mb-4">
-              <h3 className="text-white">Earnings by payment provider</h3>
-              <span className="text-gray-400">Amount</span>
+              <h3 className="text-secondary">Earnings by payment provider</h3>
+              <span className="text-white">Amount</span>
             </div>
-            <p className="text-gray-400">
+            <p className="text-white">
               No Earnings by payment provider record for this store yet
             </p>
           </div>
@@ -82,20 +80,20 @@ export function FinanceMetrics({ metrics }: Props) {
           {/* Sales Breakdown */}
           <div className="space-y-4">
             {/* Sales by Type */}
-            <div className="bg-[#0F1629] rounded-lg p-6">
+            <div className="bg-primary rounded-lg p-6">
               <div className="flex justify-between mb-4">
-                <h3 className="text-white">Sales by type</h3>
-                <span className="text-gray-400">Amount</span>
+                <h3 className="text-secondary">Sales by type</h3>
+                <span className="text-white">Amount</span>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Products</span>
+                  <span className="text-white">Products</span>
                   <span className="text-white">
                     {formatCurrency(data.salesByType.products)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Repairs</span>
+                  <span className="text-white">Repairs</span>
                   <span className="text-white">
                     {formatCurrency(data.salesByType.repairs)}
                   </span>
@@ -104,10 +102,10 @@ export function FinanceMetrics({ metrics }: Props) {
             </div>
 
             {/* Sales by Location */}
-            <div className="bg-[#0F1629] rounded-lg p-6">
+            <div className="bg-primary rounded-lg p-6">
               <div className="flex justify-between mb-4">
-                <h3 className="text-white">Sales by location</h3>
-                <span className="text-gray-400">Amount</span>
+                <h3 className="text-secondary">Sales by location</h3>
+                <span className="text-white">Amount</span>
               </div>
               {Object.entries(data.salesByLocation).map(
                 ([location, amount]) => (

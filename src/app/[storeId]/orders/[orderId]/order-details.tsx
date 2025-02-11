@@ -28,7 +28,7 @@ export function OrderDetails({ order }: Props) {
   return (
     <div className="space-y-6">
       {/* Repair Details */}
-      <div className="bg-[#1A2337] rounded-lg border border-gray-700">
+      <div className=" rounded-lg border border-gray-700">
         {order.orderItems && order.orderItems.length > 0 && (
           <Table>
             <TableHeader>
@@ -131,7 +131,7 @@ export function OrderDetails({ order }: Props) {
       </div>
 
       {/* Payment Details */}
-      <div className="bg-[#1A2337] rounded-lg border border-gray-700 p-6">
+      <div className=" rounded-lg border border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Payment</h2>
           <span className="px-2 py-0.5 text-sm bg-green-500/20 text-green-500 rounded-full">

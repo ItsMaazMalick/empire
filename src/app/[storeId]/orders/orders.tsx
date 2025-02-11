@@ -23,7 +23,7 @@ export function Orders({ orders, store }: any) {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#0B1121] text-white p-6">
+    <div className="min-h-screen bg-background p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -37,7 +37,7 @@ export function Orders({ orders, store }: any) {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button> */}
-          <Button className="bg-blue-600 hover:bg-blue-700" asChild>
+          <Button className="" asChild>
             <Link href={`/123/cart`}>
               <Plus className="w-4 h-4 mr-2" />
               Create Order
@@ -59,7 +59,7 @@ export function Orders({ orders, store }: any) {
           />
         </div> */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-[#1A2337] p-1">
+          <TabsList className=" p-1">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}

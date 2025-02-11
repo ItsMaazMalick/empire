@@ -39,45 +39,45 @@ export default async function DashboardPage({
     <div className="p-4 lg:px-32 grid grid-cols-3 gap-4">
       <Link
         href={`/${storeId}/cart`}
-        className="p-6 rounded-xl bg-secondary text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <CalendarArrowDown className="size-16" />
         <p className="text-xl font-bold">Create Order</p>
       </Link>
       <Link
         href={`/${storeId}/create-repair`}
-        className="p-6 rounded-xl bg-secondary text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <Wrench className="size-16" />
         <p className="text-xl font-bold">Create Repair</p>
       </Link>
-      <div className="p-6 rounded-xl bg-secondary text-white flex flex-col gap-4">
+      <div className="p-6 rounded-xl bg-primary flex flex-col gap-4">
         <Group className="size-16" />
         <p className="text-xl font-bold">Team Task</p>
       </div>
       <Link
         href={`/${storeId}/edit-repair`}
-        className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <Wrench className="size-16" />
         <p className="text-xl font-bold">Manage Devices</p>
       </Link>
       <Link
         href={`/${storeId}/products`}
-        className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <ScanBarcode className="size-16" />
         <p className="text-xl font-bold">Electronic Devices</p>
       </Link>
       <Link
         href={`/${storeId}/products`}
-        className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <Usb className="size-16" />
         <p className="text-xl font-bold">Accessories</p>
       </Link>
       {user?.role === "MANAGER" && (
-        <div className="p-6 rounded-xl bg-card text-white flex flex-col gap-4">
+        <div className="p-6 rounded-xl bg-primary flex flex-col gap-4">
           <Calculator />
           <p>Here&apos;s what&apos;s happening with your store today</p>
           <div>
@@ -106,7 +106,7 @@ export default async function DashboardPage({
             <ShoppingCart /> Go to Cart
           </Link>
         </Button>
-        <Button variant={"ghost"} className="w-full">
+        <Button variant={"secondary"} className="w-full">
           <Printer /> Print last order receipt
         </Button>
       </div>

@@ -10,23 +10,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "#020617",
-        foreground: "#ffffff",
+        background: "#ffffff", // White background
+        foreground: "#022763", // Blue foreground
         card: {
-          DEFAULT: "#151c2f",
-          foreground: "#ffffff",
+          DEFAULT: "#f0f8ff", // Lighter card color to match the white theme
+          foreground: "#022763", // Blue foreground for the card
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "hsl(210, 100%, 97%)", // Soft light blue for popover
+          foreground: "hsl(210, 80%, 20%)", // Dark blue for popover text
         },
         primary: {
-          DEFAULT: "#66a5ff",
-          foreground: "#000000",
+          DEFAULT: "#66a5ff", // Light blue primary color
+          foreground: "#022763", // Dark blue foreground for primary elements
         },
         secondary: {
-          DEFAULT: "#022763",
-          foreground: "#ffffff",
+          DEFAULT: "#1e3a5f", // Slightly darker blue for secondary elements
+          foreground: "#ffffff", // White text on secondary elements
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",

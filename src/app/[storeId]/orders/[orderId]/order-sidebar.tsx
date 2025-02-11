@@ -7,7 +7,7 @@ export function OrderSidebar({ order }: any) {
   return (
     <div className="space-y-6">
       {/* Order Information */}
-      <div className="bg-[#1A2337] rounded-lg border border-gray-700 p-6">
+      <div className=" rounded-lg border border-gray-700 p-6">
         <h2 className="text-lg font-semibold mb-4">Order information</h2>
 
         <div className="space-y-4">
@@ -31,7 +31,7 @@ export function OrderSidebar({ order }: any) {
       </div>
 
       {/* Customer */}
-      <div className="bg-[#1A2337] rounded-lg border border-gray-700 p-6">
+      <div className=" rounded-lg border border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Customer</h2>
           <Button
@@ -55,7 +55,7 @@ export function OrderSidebar({ order }: any) {
       </div>
 
       {/* Notes */}
-      <div className="bg-[#1A2337] rounded-lg border border-gray-700 p-6">
+      <div className=" rounded-lg border border-gray-700 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">Notes</h2>
           <Button

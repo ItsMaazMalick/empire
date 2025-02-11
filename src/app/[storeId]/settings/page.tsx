@@ -12,7 +12,7 @@ export default async function Settings() {
     <div className="p-4 lg:px-32 grid grid-cols-2 gap-4">
       <Link
         href={`/${store.id}/settings/users`}
-        className="p-6 rounded-xl bg-card text-white flex flex-col gap-4"
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
       >
         <div className="flex items-center gap-4">
           <CalendarArrowDown className="size-10" />

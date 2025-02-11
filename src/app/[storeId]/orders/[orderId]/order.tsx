@@ -14,7 +14,7 @@ import { OrderSidebar } from "./order-sidebar";
 
 export function OrderPage({ order }: any) {
   return (
-    <div className="min-h-screen bg-[#0B1121] text-white p-6">
+    <div className="min-h-screen  p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
@@ -29,23 +29,17 @@ export function OrderPage({ order }: any) {
           </h1>
         </div>
         <div className="flex gap-3">
-          <Button
-            variant="secondary"
-            className="bg-[#1A2337] hover:bg-[#1A2337]/80"
-          >
+          <Button variant="secondary" className="">
             Edit order
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="secondary"
-                className="bg-[#1A2337] hover:bg-[#1A2337]/80"
-              >
+              <Button variant="secondary" className="">
                 More actions
                 <MoreHorizontal className="w-4 h-4 ml-2" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-[#1A2337] border-gray-700 text-white">
+            <DropdownMenuContent className=" border-gray-700 ">
               <DropdownMenuItem>Delete order</DropdownMenuItem>
               <DropdownMenuItem>Mark as completed</DropdownMenuItem>
               <DropdownMenuItem>Change status</DropdownMenuItem>

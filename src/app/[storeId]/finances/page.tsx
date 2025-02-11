@@ -14,7 +14,7 @@ export default async function FinancesPage() {
   }
   const metrics = await getFinances();
   return (
-    <div className="min-h-screen bg-[#0B1121] p-6">
+    <div className="min-h-screen  p-6">
       {/* Date Range Picker */}
       <div className="mb-8">
         <DateRangePicker />
