@@ -71,7 +71,7 @@ export function RepairDevices({ brands }: RepairDevicesProps) {
                     variant={"link"}
                     asChild
                     key={model.id}
-                    className="w-full text-left text-xs text-gray-300 hover:text-white hover:bg-blue-900/30 p-1 rounded transition-colors"
+                    className="w-full text-left text-xs text-black  hover:bg-primary/30 p-1 rounded transition-colors"
                   >
                     <Link href={`/123/create-repair/${model.id}`}>
                       {model.name}
