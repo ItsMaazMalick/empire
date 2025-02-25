@@ -9,25 +9,47 @@ type PrinterConnectionProps = {
 
 export function PrinterConnection({ labelData }: PrinterConnectionProps) {
   const [isConnected, setIsConnected] = useState(false);
+  // const [printer, setPrinter] = useState<BluetoothDevice | null>(null);
   const [printer, setPrinter] = useState<BluetoothDevice | null>(null);
+
+  // const connectPrinter = async () => {
+  //   try {
+  //     const device = await navigator.bluetooth.requestDevice({
+  //       filters: [{ name: "QR380A-241Z-6FED" }],
+  //       optionalServices: ["8a20c750-1c94-be41-411d-51a55570e680"],
+  //     });
+
+  //     const server = await device.gatt?.connect();
+  //     const service = await server?.getPrimaryService(
+  //       "8a20c750-1c94-be41-411d-51a55570e680"
+  //     );
+
+  //     if (service) {
+  //       setIsConnected(true);
+  //       setPrinter(device);
+  //       console.log("Connected to printer");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error connecting to printer:", error);
+  //   }
+  // };
 
   const connectPrinter = async () => {
     try {
+      // Request device without specifying services to check availability
       const device = await navigator.bluetooth.requestDevice({
         filters: [{ name: "QR380A-241Z-6FED" }],
-        optionalServices: ["8a20c750-1c94-be41-411d-51a55570e680"],
       });
 
-      const server = await device.gatt?.connect();
-      const service = await server?.getPrimaryService(
-        "8a20c750-1c94-be41-411d-51a55570e680"
-      );
+      console.log("Device found:", device);
 
-      if (service) {
-        setIsConnected(true);
-        setPrinter(device);
-        console.log("Connected to printer");
-      }
+      const server = await device.gatt?.connect();
+      const services = await server?.getPrimaryServices();
+      console.log("Services available:", services);
+
+      setIsConnected(true);
+      setPrinter(device);
+      console.log("Connected to printer");
     } catch (error) {
       console.error("Error connecting to printer:", error);
     }
