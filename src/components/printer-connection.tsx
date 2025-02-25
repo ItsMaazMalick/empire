@@ -14,7 +14,7 @@ export function PrinterConnection({ labelData }: PrinterConnectionProps) {
   const connectPrinter = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ name: "Phomemo 241BT" }],
+        filters: [{ name: "QR380A-241Z-6FED" }],
         optionalServices: ["000018f0-0000-1000-8000-00805f9b34fb"],
       });
 
