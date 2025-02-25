@@ -15,7 +15,7 @@ export function PrinterConnection({ labelData }: PrinterConnectionProps) {
     try {
       const device = await navigator.bluetooth.requestDevice({
         filters: [{ name: "QR380A-241Z-6FED" }],
-        optionalServices: ["000018f0-0000-1000-8000-00805f9b34fb"],
+        optionalServices: ["8A20C750-1C94-BE41-411D-51A55570E680"],
       });
 
       const server = await device.gatt?.connect();
