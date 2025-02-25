@@ -20,7 +20,7 @@ export function PrinterConnection({ labelData }: PrinterConnectionProps) {
 
       const server = await device.gatt?.connect();
       const service = await server?.getPrimaryService(
-        "000018f0-0000-1000-8000-00805f9b34fb"
+        "8A20C750-1C94-BE41-411D-51A55570E680"
       );
 
       if (service) {
