@@ -15,12 +15,12 @@ export function PrinterConnection({ labelData }: PrinterConnectionProps) {
     try {
       const device = await navigator.bluetooth.requestDevice({
         filters: [{ name: "QR380A-241Z-6FED" }],
-        optionalServices: ["8A20C750-1C94-BE41-411D-51A55570E680"],
+        optionalServices: ["8a20c750-1c94-be41-411d-51a55570e680"],
       });
 
       const server = await device.gatt?.connect();
       const service = await server?.getPrimaryService(
-        "8A20C750-1C94-BE41-411D-51A55570E680"
+        "8a20c750-1c94-be41-411d-51a55570e680"
       );
 
       if (service) {
@@ -42,10 +42,10 @@ export function PrinterConnection({ labelData }: PrinterConnectionProps) {
     try {
       const server = await printer.gatt?.connect();
       const service = await server?.getPrimaryService(
-        "8A20C750-1C94-BE41-411D-51A55570E680"
+        "8a20c750-1c94-be41-411d-51a55570e680"
       );
       const characteristic = await service?.getCharacteristic(
-        "8A20C750-1C94-BE41-411D-51A55570E680"
+        "8a20c750-1c94-be41-411d-51a55570e680"
       );
 
       if (characteristic) {
