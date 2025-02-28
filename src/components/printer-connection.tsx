@@ -382,7 +382,7 @@ export function PrinterConnection() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>WebUSB Not Supported</AlertTitle>
         <AlertDescription>
-          Your browser doesn't support WebUSB. Please use Chrome or Edge on
+          Your browser doesn&apos;t support WebUSB. Please use Chrome or Edge on
           desktop.
         </AlertDescription>
       </Alert>
@@ -488,8 +488,8 @@ export function PrinterConnection() {
       <div className="text-xs text-muted-foreground mt-4">
         <p>
           Note: WebUSB requires HTTPS in production environments. For local
-          development, you may need to enable the "Experimental Web Platform
-          features" flag in Chrome.
+          development, you may need to enable the &quot;Experimental Web
+          Platform features&quot; flag in Chrome.
         </p>
       </div>
     </div>
