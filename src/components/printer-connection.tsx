@@ -280,52 +280,40 @@ export function PrinterConnection() {
       console.log("Selected device:", device);
 
       try {
-        // Try to open the device
+        // Attempt to open the USB device and handle it
         await device.open();
-
-        // Select configuration if needed
+      
+        // Handle configuration if necessary
         if (device.configuration === null) {
           await device.selectConfiguration(1);
         }
-
-        // Claim the interface
+      
         await device.claimInterface(0);
-
         setCurrentDevice(device);
         setIsConnected(true);
-
-        // Add to our list of devices
-        setDymoDevices((prev) => [
-          ...prev.filter((d) => d.device.serialNumber !== device.serialNumber),
-          {
-            vendorId: device.vendorId,
-            productId: device.productId,
-            name: device.productName || "Unknown DYMO Printer",
-            device: device,
-          },
-        ]);
-      } catch (openError) {
+      
+        // Handle success
+        setError(null);
+      } catch (openError: unknown) {
         console.error("Error opening device:", openError);
-
-        // Special handling for the SecurityError
-        if (openError.name === "SecurityError") {
+      
+        // Check if the error is an instance of Error and has the 'name' property
+        if (openError instanceof Error && openError.name === "SecurityError") {
           setError(
             "Security Error: The browser denied access to the device. " +
               "This may be because the site is not secure (HTTPS) or the USB device requires special permissions. " +
               "Try using Chrome and ensure you're on an HTTPS connection."
           );
-        } else {
+        } else if (openError instanceof Error) {
+          // Handle other types of errors
           setError(`Failed to open the printer: ${openError.message}`);
+        } else {
+          setError("An unknown error occurred while opening the device.");
         }
-      }
-    } catch (err) {
-      console.error("Error requesting device:", err);
-      // This error often occurs when the user cancels the device selection dialog
-      setError("No printer was selected or access was denied.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      } finally {
+        setIsLoading(false)
+         
+  }
 
   const connectToDevice = async (device: USBDevice) => {
     setIsLoading(true);
