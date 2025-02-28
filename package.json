@@ -40,6 +40,8 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^7.4.4",
+    "usb": "^2.15.0",
+    "webusb": "^2.2.0",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
