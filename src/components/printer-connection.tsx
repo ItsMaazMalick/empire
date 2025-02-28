@@ -203,6 +203,9 @@ export function PrinterConnection() {
   const [device, setDevice] = useState<USBDevice | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const vendorId = 2338; // 0x92A
+  const productId = 40; // 0x28
+
   const connectPrinter = async () => {
     try {
       // Check if WebUSB is supported and available in the browser
@@ -213,7 +216,7 @@ export function PrinterConnection() {
 
       // Request access to the DYMO printer using vendorId and productId
       const selectedDevice = await navigator.usb.requestDevice({
-        filters: [{ vendorId: 0x922, productId: 0x28 }], // DYMO Printer Vendor and Product ID
+        filters: [{ vendorId, productId }], // DYMO Printer Vendor and Product ID
       });
 
       console.log("Selected device:", selectedDevice);
