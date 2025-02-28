@@ -245,7 +245,7 @@ export function PrinterConnection() {
   }, []);
 
   const handleClick = async () => {
-    const res = await fetch("https://expire-shop.vercel.app/api/print");
+    const res = await fetch("https://empire-shop.vercel.app/api/print");
     const data = await res.json();
     console.log(data);
   };
