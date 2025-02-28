@@ -60,8 +60,11 @@ export function PrinterConnection() {
   const connectPrinter = async () => {
     try {
       // Request access to any USB device first to see what's available
+
       const device = await navigator.usb.requestDevice({
-        filters: [], // Empty filters to see all devices
+        filters: [
+          { vendorId: 0x922, productId: 0x28 }, // DYMO printer's Vendor ID and Product ID
+        ],
       });
 
       console.log("Selected device:", {
