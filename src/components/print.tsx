@@ -31,7 +31,7 @@ export function PrintPage() {
           <pre className="bg-gray-100 p-4 rounded">{labelData}</pre>
         </div>
       )}
-      <PrinterConnection labelData={labelData} />
+      <PrinterConnection />
     </main>
   );
 }
