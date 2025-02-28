@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import usb from "usb";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
   try {
     // Find the DYMO printer
     const device = usb.findByIds(0x922, 0x28);
