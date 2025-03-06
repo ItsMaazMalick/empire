@@ -115,7 +115,7 @@ export default async function DashboardPage({
           <Printer /> Print last order receipt
         </Button>
       </div>
-      <PrintPage />
+      {/* <PrintPage /> */}
     </div>
   );
 }
