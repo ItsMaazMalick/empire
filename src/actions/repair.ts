@@ -367,6 +367,34 @@ export async function getAllRepairBrandswithSeriesModal() {
     return null;
   }
 }
+export async function getAllRepairBrandswithSeriesModalInventory() {
+  try {
+    const store = await getStoreFromSession();
+    if (!store) {
+      return null;
+    }
+    const brands = await prisma.repairBrand.findMany({
+      include: {
+        repairSeries: {
+          include: {
+            models: {
+              include: {
+                repairServiceType: {
+                  include: {
+                    repairServices: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return brands;
+  } catch (error) {
+    return null;
+  }
+}
 
 export async function getRepairServicesByModelId(modelId: string) {
   try {

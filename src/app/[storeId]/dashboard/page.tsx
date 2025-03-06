@@ -52,10 +52,14 @@ export default async function DashboardPage({
         <Wrench className="size-16" />
         <p className="text-xl font-bold">Create Repair</p>
       </Link>
-      <div className="p-6 rounded-xl bg-primary flex flex-col gap-4">
+      <Link
+        href={`/${storeId}/inventory`}
+        className="p-6 rounded-xl bg-primary flex flex-col gap-4"
+      >
         <Group className="size-16" />
-        <p className="text-xl font-bold">Team Task</p>
-      </div>
+        <p className="text-xl font-bold">Inventory</p>
+      </Link>
+
       <Link
         href={`/${storeId}/edit-repair`}
         className="p-6 rounded-xl bg-primary flex flex-col gap-4"
