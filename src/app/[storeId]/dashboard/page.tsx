@@ -5,7 +5,7 @@ import {
   getTotalWaitingToday,
 } from "@/actions/order";
 import { getStoreFromSession, getUserFromSession } from "@/actions/session";
-import { PrintPage } from "@/components/print";
+import { PrintLabel } from "@/components/printer-connection";
 import { Button } from "@/components/ui/button";
 import {
   Calculator,
@@ -115,7 +115,7 @@ export default async function DashboardPage({
           <Printer /> Print last order receipt
         </Button>
       </div>
-      {/* <PrintPage /> */}
+      <PrintLabel />
     </div>
   );
 }
