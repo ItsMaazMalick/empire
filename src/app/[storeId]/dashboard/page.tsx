@@ -1,4 +1,5 @@
 import {
+  getLastOrder,
   getTotalOrdersToday,
   getTotalRepairsToday,
   getTotalSalesToday,
@@ -11,6 +12,7 @@ import {
   Calculator,
   CalendarArrowDown,
   Group,
+  Loader2,
   Printer,
   ScanBarcode,
   ShoppingBag,
@@ -20,6 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export default async function DashboardPage({
   params,
@@ -33,6 +36,7 @@ export default async function DashboardPage({
   const repairs = await getTotalRepairsToday();
   const user = await getUserFromSession();
   const store = await getStoreFromSession();
+  const lastOrder = await getLastOrder();
   if (!user || !store) {
     return redirect("/auth/login");
   }
@@ -111,11 +115,10 @@ export default async function DashboardPage({
             <ShoppingCart /> Go to Cart
           </Link>
         </Button>
-        <Button variant={"secondary"} className="w-full">
-          <Printer /> Print last order receipt
-        </Button>
+        <Suspense fallback={<Loader2 className="animate-spin" />}>
+          {lastOrder && <PrintLabel order={lastOrder} />}
+        </Suspense>
       </div>
-      <PrintLabel />
     </div>
   );
 }

@@ -118,7 +118,7 @@ export async function createOrder(order: Order | null) {
       message: "Order created successfully",
     };
   } catch (error) {
-    console.log(error);
+    console.log(JSON.stringify(error));
     return {
       success: false,
       message: "Failed to create order. Please try again.",
@@ -451,5 +451,58 @@ export async function updateOrderPaymentStatus(
       success: false,
       message: "Something went wrong",
     };
+  }
+}
+
+export async function getLastOrder() {
+  try {
+    const order = await prisma.order.findMany({
+      select: {
+        price: true,
+        customer: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
+        orderItems: {
+          select: {
+            quantity: true,
+            orderService: {
+              select: {
+                name: true,
+                repairServiceType: {
+                  select: {
+                    name: true,
+                    repairModel: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderProducts: {
+          select: {
+            quantity: true,
+            orderProduct: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+      take: 1,
+    });
+    return order[0];
+  } catch (error) {
+    return null;
   }
 }
