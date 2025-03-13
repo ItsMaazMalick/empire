@@ -458,7 +458,10 @@ export async function getLastOrder() {
   try {
     const order = await prisma.order.findMany({
       select: {
+        id: true,
         price: true,
+        updatedAt: true,
+        orderStatus: true,
         customer: {
           select: {
             name: true,
@@ -502,6 +505,59 @@ export async function getLastOrder() {
       take: 1,
     });
     return order[0];
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function getOrderForPrint(id: string) {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        price: true,
+        updatedAt: true,
+        orderStatus: true,
+        customer: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
+        orderItems: {
+          select: {
+            quantity: true,
+            orderService: {
+              select: {
+                name: true,
+                repairServiceType: {
+                  select: {
+                    name: true,
+                    repairModel: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderProducts: {
+          select: {
+            quantity: true,
+            orderProduct: {
+              select: {
+                title: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    return order;
   } catch (error) {
     return null;
   }

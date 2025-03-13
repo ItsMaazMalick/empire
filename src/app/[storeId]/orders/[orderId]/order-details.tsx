@@ -19,12 +19,15 @@ import {
 import { Fragment } from "react";
 import { UpdateServiceModal } from "./update-service-modal";
 import { UpdatePaymentModal } from "./update-payment-modal";
+import { PrintLabel } from "@/components/printer-connection";
 
 type Props = {
   order: any;
+  baseUrl: string;
+  storeId: string;
 };
 
-export function OrderDetails({ order }: Props) {
+export function OrderDetails({ order, baseUrl, storeId }: Props) {
   return (
     <div className="space-y-6">
       {/* Repair Details */}
@@ -73,13 +76,13 @@ export function OrderDetails({ order }: Props) {
                     </TableCell>
                     <TableCell className="flex items-center gap-2">
                       ${item.orderService.price.toFixed(2)}
-                      <Button
+                      {/* <Button
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 border-gray-600"
                       >
                         <Printer className="w-4 h-4" />
-                      </Button>
+                      </Button> */}
                     </TableCell>
                     <TableCell>
                       <UpdatePaymentModal item={order} />
@@ -104,6 +107,7 @@ export function OrderDetails({ order }: Props) {
                 <TableHead>Name</TableHead>
                 <TableHead>Quantity</TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Payment Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -115,13 +119,16 @@ export function OrderDetails({ order }: Props) {
                   <TableCell>{item.quantity}</TableCell>
                   <TableCell className="flex items-center gap-2">
                     ${(item.orderProduct.price * item.quantity).toFixed(2)}
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 border-gray-600"
                     >
                       <Printer className="w-4 h-4" />
-                    </Button>
+                    </Button> */}
+                  </TableCell>
+                  <TableCell>
+                    <UpdatePaymentModal item={order} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -147,9 +154,12 @@ export function OrderDetails({ order }: Props) {
 
           <div className="pt-4 border-t border-gray-700">
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline" className="border-gray-600">
-                Print thermal receipt
-              </Button>
+              <PrintLabel
+                buttonTitle="Print thermal receipt"
+                order={order}
+                storeId={storeId}
+                baseUrl={baseUrl}
+              />
               <Button variant="outline" className="border-gray-600">
                 Print Letter Receipt
               </Button>

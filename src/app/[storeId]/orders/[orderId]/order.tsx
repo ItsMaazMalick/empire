@@ -12,7 +12,7 @@ import {
 import { OrderDetails } from "./order-details";
 import { OrderSidebar } from "./order-sidebar";
 
-export function OrderPage({ order }: any) {
+export function OrderPage({ order, baseUrl, storeId }: any) {
   return (
     <div className="min-h-screen  p-6">
       {/* Header */}
@@ -50,7 +50,7 @@ export function OrderPage({ order }: any) {
 
       {/* Content */}
       <div className="grid lg:grid-cols-[1fr,350px] gap-6">
-        <OrderDetails order={order} />
+        <OrderDetails order={order} baseUrl={baseUrl} storeId={storeId} />
         <OrderSidebar order={order} />
       </div>
     </div>

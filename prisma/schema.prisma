@@ -67,6 +67,7 @@ model Product {
   imei          String
   storage       String
   batteryHealth String
+  network       String
   image         String?
   price         Float
   minimumPrice  Float

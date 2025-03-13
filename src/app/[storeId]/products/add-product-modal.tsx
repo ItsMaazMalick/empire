@@ -124,6 +124,17 @@ export function AddProductModal({
               />
             </div>
             <div>
+              <Label htmlFor="network" className="text-right">
+                Network
+              </Label>
+              <Input
+                defaultValue={product?.network}
+                id="network"
+                name="network"
+                className="col-span-3"
+              />
+            </div>
+            <div>
               <Label htmlFor="storage" className="text-right">
                 Storage
               </Label>

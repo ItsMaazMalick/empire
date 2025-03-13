@@ -37,6 +37,7 @@ export default async function DashboardPage({
   const user = await getUserFromSession();
   const store = await getStoreFromSession();
   const lastOrder = await getLastOrder();
+  const baseUrl = process.env.BASE_URL;
   if (!user || !store) {
     return redirect("/auth/login");
   }
@@ -116,7 +117,14 @@ export default async function DashboardPage({
           </Link>
         </Button>
         <Suspense fallback={<Loader2 className="animate-spin" />}>
-          {lastOrder && <PrintLabel order={lastOrder} />}
+          {lastOrder && (
+            <PrintLabel
+              buttonTitle="Print last order receipt"
+              order={lastOrder}
+              storeId={storeId}
+              baseUrl={baseUrl}
+            />
+          )}
         </Suspense>
       </div>
     </div>

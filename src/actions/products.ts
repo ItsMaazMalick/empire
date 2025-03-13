@@ -17,6 +17,7 @@ export async function createProduct(
     const description = formData.get("description") as string;
     const tags = formData.get("tags") as string;
     const imei = formData.get("imei") as string;
+    const network = formData.get("network") as string;
     const storage = formData.get("storage") as string;
     const batteryHealth = formData.get("batteryHealth") as string;
     const image = formData.get("image") as string;
@@ -38,10 +39,10 @@ export async function createProduct(
     await prisma.product.create({
       data: {
         title,
-
         description,
         tags,
         imei,
+        network,
         storage,
         batteryHealth,
         image,
@@ -80,6 +81,7 @@ export async function updateProduct(
     const description = formData.get("description") as string;
     const tags = formData.get("tags") as string;
     const imei = formData.get("imei") as string;
+    const network = formData.get("network") as string;
     const storage = formData.get("storage") as string;
     const batteryHealth = formData.get("batteryHealth") as string;
     const image = formData.get("image") as string;
@@ -103,10 +105,10 @@ export async function updateProduct(
       where: { id: productId },
       data: {
         title,
-
         description,
         tags,
         imei,
+        network,
         storage,
         batteryHealth,
         image,

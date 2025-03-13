@@ -24,6 +24,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { AddProductModal } from "./add-product-modal";
 import { deleteProduct } from "@/actions/products";
 import { Button } from "@/components/ui/button";
+import { PrintProduct } from "@/components/print-product";
 
 // Sample data - replace with your actual data source
 
@@ -149,6 +150,7 @@ export function ProductsTable({
                 >
                   <Trash2 className="text-destructive" />
                 </Button>
+                <PrintProduct product={order} />
               </TableCell>
             </TableRow>
           ))}
