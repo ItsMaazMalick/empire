@@ -31,7 +31,7 @@ export function PrintLabel({ order }: any) {
       <div className="hidden">
         <div
           ref={componentRef}
-          className="w-[340px] h-[113px] p-2 text-sm flex items-center"
+          className="w-[330px] h-[113px] p-2 text-sm flex items-center"
         >
           {/* Content to be printed */}
           <div className="flex-1 font-semibold">
