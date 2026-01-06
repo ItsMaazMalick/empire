@@ -13,9 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { createRepairBrand, updateRepairBrand } from "@/actions/repair";
 import { loginStore } from "@/actions/auth";
 import { useRouter } from "next/navigation";
 
@@ -40,7 +38,7 @@ export function StoreLogin({
   useEffect(() => {
     if (state.success) {
       toast({
-        description: state.message || "Brand added successfully",
+        description: state.message || "Logged in to store",
       });
       router.push(`/${state.id}/dashboard`);
       setOpen(false);
@@ -50,25 +48,35 @@ export function StoreLogin({
         variant: "destructive",
       });
     }
-  }, [state, toast]);
+  }, [state, toast, router]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <form action={action}>
+      <DialogContent className="sm:max-w-[420px] border-slate-800 bg-slate-900/95 text-slate-100 backdrop-blur">
+        <form action={action} className="space-y-4">
           <DialogHeader>
-            <DialogTitle>Login to Your Store</DialogTitle>
-            <DialogDescription>
-              Enter the PIN of your store to login
+            <DialogTitle className="text-base font-semibold">
+              Login to store
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-400">
+              Enter your store PIN to securely access the dashboard.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="pin" className="text-right">
+          <div className="grid gap-4 py-2">
+            <div className="grid grid-cols-4 items-center gap-3">
+              <Label
+                htmlFor="code"
+                className="col-span-1 text-xs font-medium text-slate-300"
+              >
                 Store PIN
               </Label>
-              <Input id="code" name="code" className="col-span-3" />
+              <Input
+                id="code"
+                name="code"
+                className="col-span-3 h-9 rounded-lg border-slate-700 bg-slate-900/80 text-sm text-slate-100 placeholder:text-slate-500 focus-visible:ring-sky-500"
+                placeholder="••••"
+              />
               <Input
                 name="userId"
                 defaultValue={userId}
@@ -77,15 +85,20 @@ export function StoreLogin({
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="mt-2 flex flex-row items-center justify-end gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
+              className="h-9 rounded-lg border-slate-700 bg-slate-900/60 text-xs text-slate-200 hover:bg-slate-800"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isPending}>
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="h-9 rounded-lg bg-sky-500 px-4 text-xs font-medium text-slate-950 shadow-md shadow-sky-900/40 hover:bg-sky-400 disabled:opacity-60"
+            >
               {isPending ? "Please wait..." : "Login"}
             </Button>
           </DialogFooter>
